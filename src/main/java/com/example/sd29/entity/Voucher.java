@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -14,13 +15,8 @@ import java.util.Set;
 @ToString
 @Entity
 @Table(name = "voucher")
-public class Voucher {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
+public class Voucher extends BaseEntity implements Serializable {
     @Column(name = "type", nullable = false)
-    @Enumerated(EnumType.STRING)
     private String type;
 
     @Column(name = "discount", nullable = false)
@@ -57,4 +53,5 @@ public class Voucher {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "voucher")
     @JsonIgnore
     private Set<Brand_Voucher> brandVouchers;
+
 }
