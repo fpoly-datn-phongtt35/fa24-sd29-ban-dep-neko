@@ -19,23 +19,23 @@ public abstract class BaseEntity {
     // @PrePersist và @PreUpdate: Các method này sẽ được gọi tự động trước khi lưu và cập nhật bản ghi.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @CreatedDate
     @Column(updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime createAt;
 
     @LastModifiedDate
-    private LocalDateTime updatedAt;
+    private LocalDateTime updateAt;
 
 
     @PrePersist
     protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
+        this.createAt = LocalDateTime.now();
     }
 
     @PreUpdate
     protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
+        this.updateAt = LocalDateTime.now();
     }
 }

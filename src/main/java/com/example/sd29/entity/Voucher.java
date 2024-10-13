@@ -1,6 +1,8 @@
 package com.example.sd29.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -46,12 +48,12 @@ public class Voucher extends BaseEntity implements Serializable {
     @Column(name = "description")
     private String description;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "voucher")
-    @JsonIgnore
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "voucher")
+    @JsonIgnoreProperties({"voucher"})
     private Set<Customer_Voucher> customerVouchers;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "voucher")
-    @JsonIgnore
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "voucher")
+    @JsonIgnoreProperties({"voucher"})
     private Set<Brand_Voucher> brandVouchers;
 
 }

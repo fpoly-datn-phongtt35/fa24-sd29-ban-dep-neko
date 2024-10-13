@@ -1,6 +1,7 @@
 package com.example.sd29.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.*;
@@ -18,9 +19,9 @@ public class Brand_Voucher implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "brand_id")
-    @JsonIgnore
+    @JsonIgnoreProperties({"brandVouchers"})
     private Brand brand;
 
     @ManyToOne(fetch = FetchType.LAZY)
