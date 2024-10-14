@@ -81,12 +81,22 @@ public class VoucherController {
         Pageable pageable = PageRequest.of(page, size);
         Page<Voucher> result = voucherRepository
         .searchVouchers(keywork, type, brandId, isActive, minAmount, maxAmount, minDiscount, maxDiscount, pageable);
+        if(page != 0 && result.getContent().isEmpty()) {
+            page = 0;
+            pageable = PageRequest.of(page, size);
+            result = voucherRepository
+                    .searchVouchers(keywork, type, brandId, isActive, minAmount, maxAmount, minDiscount, maxDiscount, pageable);
+        }
         return pagedResourcesAssembler.toModel(result);
     }
     
     @PostMapping("/create")
     public String create(@ModelAttribute("voucher") Voucher voucher, @RequestParam List<Integer> brandIds) {
         validStartDateAndEndDate(voucher.getStartDate(), voucher.getEndDate());
+        if(voucher.getType().equalsIgnoreCase("percentage")){
+            if(voucher.getDiscount() > 100)
+                voucher.setDiscount(100.0);
+        }
         Voucher saved = voucherRepository.save(voucher);
         List<Customer> customers = customerRepository.findAll();
         if(!customers.isEmpty())
@@ -100,6 +110,10 @@ public class VoucherController {
     @ResponseBody
     public ResponseEntity<Void> update(@RequestBody Voucher voucher, @RequestParam List<Integer> brandIds) {
         if(!voucher.getType().equalsIgnoreCase("percentage")) voucher.setMaxDiscount(null);
+        if(voucher.getType().equalsIgnoreCase("percentage")){
+            if(voucher.getDiscount() > 100)
+                voucher.setDiscount(100.0);
+        }
         voucherRepository.save(voucher);
         List<Customer> customers = customerRepository.findAll();
         createCustomerVoucher(customers, voucher);

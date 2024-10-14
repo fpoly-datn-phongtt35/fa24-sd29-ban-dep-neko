@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 public interface VoucherRepository extends JpaRepository<Voucher, Integer> {
     Page<Voucher> findAllByOrderByCreateAtDesc(Pageable pageable);
 
-    @Query(value = "SELECT v.* FROM voucher v "
+    @Query(value = "SELECT DISTINCT v.* FROM voucher v "
             + "LEFT JOIN customer_voucher cv ON v.id = cv.voucher_id "
             + "LEFT JOIN customer c ON cv.customer_id = c.id "
             + "LEFT JOIN brand_voucher bv ON v.id = bv.voucher_id "
@@ -23,11 +23,10 @@ public interface VoucherRepository extends JpaRepository<Voucher, Integer> {
             + "AND (:maxValue IS NULL OR v.discount <= :maxValue) "
             + "AND (:brandId IS NULL OR b.id = :brandId) "
             + "AND (:keywork IS NULL OR "
-            + "    (FUNCTION('ISNUMERIC', :keywork) = true AND v.discount = CAST(:keywork as double)) " // Kiểm tra nếu keywork là số
-            + "    OR c.name LIKE CONCAT('%', :keywork, '%'))"
-            + "GROUP BY v.id "
-            + "ORDER BY create_at DESC", // Tìm kiếm theo tên khách hàng
-            countQuery = "SELECT COUNT(*) FROM voucher v " // sử dụng để phân trang
+            + "    (ISNUMERIC(:keywork) = 1 AND v.discount = CAST(:keywork AS FLOAT)) " // Tìm theo số
+            + "    OR c.name LIKE CONCAT('%', :keywork, '%'))" // Tìm kiếm theo tên khách hàng
+            + "ORDER BY v.create_at DESC",
+            countQuery = "SELECT COUNT(DISTINCT v.id) FROM voucher v "
                     + "LEFT JOIN customer_voucher cv ON v.id = cv.voucher_id "
                     + "LEFT JOIN customer c ON cv.customer_id = c.id "
                     + "LEFT JOIN brand_voucher bv ON v.id = bv.voucher_id "
@@ -40,10 +39,8 @@ public interface VoucherRepository extends JpaRepository<Voucher, Integer> {
                     + "AND (:maxValue IS NULL OR v.discount <= :maxValue) "
                     + "AND (:brandId IS NULL OR b.id = :brandId) "
                     + "AND (:keywork IS NULL OR "
-                    + "    (FUNCTION('ISNUMERIC', :keywork) = true AND v.discount = CAST(:keywork as double)) "
-                    + "    OR c.name LIKE CONCAT('%', :keywork, '%'))"
-                    + "GROUP BY v.id "
-                    + "ORDER BY create_at DESC",
+                    + "    (ISNUMERIC(:keywork) = 1 AND v.discount = CAST(:keywork AS FLOAT)) "
+                    + "    OR c.name LIKE CONCAT('%', :keywork, '%'))",
             nativeQuery = true)
     Page<Voucher> searchVouchers(
             @Param("keywork") String keywork,

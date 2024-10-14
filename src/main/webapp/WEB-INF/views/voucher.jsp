@@ -122,13 +122,13 @@
                         <div class="col-6">
                           <div class="col-12">
                             <label for="minAmount" class="form-label">Tối thiểu</label>
-                            <input type="number" class="form-control" id="minDiscount" placeholder="">
+                            <input type="number" class="form-control" id="minDiscount" placeholder="" min="0">
                           </div>
                         </div>
                         <div class="col-6">
                           <div class="col-12">
                             <label for="minAmount" class="form-label">Tối đa</label>
-                            <input type="number" class="form-control" id="maxDiscount" placeholder="">
+                            <input type="number" class="form-control" id="maxDiscount" placeholder="" min="0">
                           </div>
                         </div>
                       </div>
@@ -139,13 +139,13 @@
                         <div class="col-6">
                           <div class="col-12">
                             <label for="minAmount" class="form-label">Tối thiểu</label>
-                            <input type="number" class="form-control" id="minPurchaseAmount" placeholder="">
+                            <input type="number" class="form-control" id="minPurchaseAmount" placeholder="" min="0">
                           </div>
                         </div>
                         <div class="col-6">
                           <div class="col-12">
                             <label for="minAmount" class="form-label">Tối đa</label>
-                            <input type="number" class="form-control" id="maxPurchaseAmount" placeholder="">
+                            <input type="number" class="form-control" id="maxPurchaseAmount" placeholder="" min="0">
                           </div>
                         </div>
                       </div>
@@ -411,11 +411,11 @@
           <option value="10">10</option>
           <option value="50">50</option>
           <option value="100">100</option>
-      </select>
+        </select>
     
-      <ul id="paginationList" class="pagination-custom">
-          <!-- Các nút phân trang sẽ được thêm vào đây -->
-      </ul>
+        <ul id="paginationList" class="pagination-custom">
+            <!-- Các nút phân trang sẽ được thêm vào đây -->
+        </ul>
       </div>
       </div>
 
@@ -680,7 +680,7 @@
         search(keywork);
       }
       // End Fillter
-      
+    
       // Search Start
       const search_input = document.getElementById("search-input");
 
@@ -708,8 +708,6 @@
           })
           .then((data) => {
             updateResult(data); // Cập nhật kết quả vào DOM
-            let page = data.page
-            createPagination(page.number + 1, page.totalPages, page.size)
           })
           .catch((error) => {
             console.error("Fetch operation error:", error);
@@ -772,9 +770,12 @@
               tableBody.appendChild(tr); // Thêm hàng mới vào `tbody`
             }
           });
+          let page = data.page
+            createPagination(page.number + 1, page.totalPages, page.size)
           noResultsRow.style.display = "none"; // Ẩn thông báo không có kết quả
         } else {
           noResultsRow.style.display = ""; // Bật thông báo không có kết quả
+          createPagination(-1,0,0)
         }
       }
       // End Search
@@ -1007,17 +1008,22 @@
       function createPagination(currentPage, totalPages, pageSize) {
           let paginationContainer = document.getElementById('paginationList');
           paginationContainer.innerHTML = '';  // Xóa nội dung cũ
-
+          if(currentPage == -1) {
+            document.getElementById('pagination-container').style.display = "none";
+            return;
+          }else {
+            document.getElementById('pagination-container').style.display = "";
+          }
           let paginationList = document.createElement('ul');
           paginationList.classList.add('pagination-custom');
 
           let maxPagesToShow = 5;
-
+          
           // Thêm nút Previous
           let prevItem = document.createElement('li');
           if(currentPage == 1) prevItem.classList.add('disabled');
           else prevItem.classList.remove('disabled');
-          prevItem.innerHTML = `<a href="#" onclick="goToPage(${currentPage - 1 <= 0? 1 : currentPage - 1})">Previous</a>`;
+          prevItem.innerHTML = `<a href="#" onclick="goToPage(`+(currentPage - 1 <= 0? 1 : currentPage - 1)+`)">Previous</a>`;
           paginationList.appendChild(prevItem);
 
           // Tính toán bắt đầu và kết thúc trang
@@ -1059,12 +1065,12 @@
               lastPageItem.innerHTML = `<a href="#" onclick="goToPage(${totalPages})">${totalPages}</a>`;
               paginationList.appendChild(lastPageItem);
           }
-
+          
           // Thêm nút Next
           let nextItem = document.createElement('li');
           if (currentPage == totalPages) nextItem.classList.add('disabled');
           else nextItem.classList.remove('disabled');
-          nextItem.innerHTML = `<a href="#" onclick="goToPage(${currentPage + 1})">Next</a>`;
+          nextItem.innerHTML = `<a href="#" onclick="goToPage(`+(currentPage + 1 > totalPages? currentPage : currentPage + 1)+`)">Next</a>`;
           paginationList.appendChild(nextItem);
 
           paginationContainer.appendChild(paginationList);
