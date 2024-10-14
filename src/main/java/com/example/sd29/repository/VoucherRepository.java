@@ -23,7 +23,7 @@ public interface VoucherRepository extends JpaRepository<Voucher, Integer> {
             + "AND (:maxValue IS NULL OR v.discount <= :maxValue) "
             + "AND (:brandId IS NULL OR b.id = :brandId) "
             + "AND (:keywork IS NULL OR "
-            + "    (:keywork REGEXP '^[0-9]+$' AND v.discount = :keywork) " // Kiểm tra nếu keywork là số
+            + "    (FUNCTION('ISNUMERIC', :keywork) = true AND v.discount = CAST(:keywork as double)) " // Kiểm tra nếu keywork là số
             + "    OR c.name LIKE CONCAT('%', :keywork, '%'))"
             + "GROUP BY v.id "
             + "ORDER BY create_at DESC", // Tìm kiếm theo tên khách hàng
@@ -40,7 +40,7 @@ public interface VoucherRepository extends JpaRepository<Voucher, Integer> {
                     + "AND (:maxValue IS NULL OR v.discount <= :maxValue) "
                     + "AND (:brandId IS NULL OR b.id = :brandId) "
                     + "AND (:keywork IS NULL OR "
-                    + "    (:keywork REGEXP '^[0-9]+$' AND v.discount = :keywork) "
+                    + "    (FUNCTION('ISNUMERIC', :keywork) = true AND v.discount = CAST(:keywork as double)) "
                     + "    OR c.name LIKE CONCAT('%', :keywork, '%'))"
                     + "GROUP BY v.id "
                     + "ORDER BY create_at DESC",
