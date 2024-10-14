@@ -47,7 +47,7 @@
       padding: 8px;
       margin-left: auto;
       cursor: pointer;
-      z-index: 12;
+      margin-right: 15px;
     }
     .pagination-custom {
             margin-top: 8px;
@@ -55,7 +55,6 @@
             list-style: none;
             justify-content: center;
             padding-left: 0;
-            z-index: 12;
         }
         .pagination-custom li {
             margin: 0 5px;
@@ -170,30 +169,48 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <form class="row g-3" action="/v1/voucher/create" method="post" modelAttribute="voucher">
+              <form class="row g-3 needs-validation" id="form-create" action="/v1/voucher/create" method="post" modelAttribute="voucher">
                 <div class="col-md-6">
                   <label for="discount" class="form-label">Giảm giá<span style="color: red;"> *</span></label>
                   <input type="number" name="discount" class="form-control" id="discount">
+                  <div class="invalid-feedback">
+                    Vui lòng điền số giảm giá (giảm giá > 0)
+                  </div>
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Số tiền tối thiểu<span style="color: red;"> *</span></label>
-                  <input type="number" class="form-control" name="minPurchaseAmount" id="minPurchaseAmount">
+                  <input type="number" class="form-control" name="minPurchaseAmount" id="create-minPurchaseAmount">
+                  <div class="invalid-feedback">
+                    Vui lòng điền số tiền tối thiểu (lớn hơn hoặc bằng 0)
+                  </div>
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Số lượng</label>
-                  <input type="number" class="form-control" name="usageLimit" id="usageLimit">
+                  <input type="number" class="form-control" name="usageLimit" id="usageLimit" min="1">
+                  <div class="invalid-feedback">
+                    Số lượng không được nhỏ hơn 0
+                  </div>
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Số lần dùng</label>
-                  <input type="number" class="form-control" name="userLimit" id="userLimit">
+                  <input type="number" class="form-control" name="userLimit" id="userLimit" min="1">
+                  <div class="invalid-feedback">
+                    Số lần dùng phải lớn hơn 0
+                  </div>
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Ngày áp dụng<span style="color: red;"> *</span></label>
                   <input type="datetime-local" class="form-control" name="startDate" id="startDate">
+                  <div class="invalid-feedback">
+                    Vui lòng chọn ngày áp dụng mã
+                  </div>
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Ngày kết thúc<span style="color: red;"> *</span></label>
                   <input type="datetime-local" class="form-control" name="endDate" id="endDate">
+                  <div class="invalid-feedback">
+                    Vui lòng chọn ngày kết thúc mã
+                  </div>
                 </div>
                 <div class="col-md-6">
                   <div style="margin-top: 13px;">
@@ -207,15 +224,21 @@
                 </div>
                 <div class="col-md-6 div-maxDiscount" style="display: none;">
                   <label class="form-label">Giảm tối đa</label>
-                  <input type="number" class="form-control" name="maxDiscount" id="maxDiscount">
+                  <input type="number" class="form-control" name="maxDiscount" id="maxDiscount" min="1">
+                  <div class="invalid-feedback">
+                    Phải lớn hơn 0
+                  </div>
                 </div>
                 <div class="col-md-12">
                   <label class="form-label">Chọn các brand áp dụng mã<span style="color: red;"> *</span></label>
-                  <select class="selectpicker" name="brandIds" multiple aria-label="size 3 select example">
+                  <select class="selectpicker" id="brandIds" name="brandIds" multiple aria-label="size 3 select example">
                     <c:forEach items="${brands}" var="item">
                       <option value="${item.id}">${item.name}</option>
                     </c:forEach>
                   </select>
+                  <div class="invalid-feedback valid-create-brand">
+                    Vui lòng chọn brand để áp dụng mã giảm giá
+                  </div>
                 </div>
                 <div class="col-12">
                   <label class="form-label">Mô tả</label>
@@ -231,7 +254,7 @@
       </div>
       
     
-      <div class="modal fade" id="modal-update" tabindex="-1" aria-labelledby="modalUpdate" aria-hidden="true">
+      <div class="modal fade needs-validation" id="modal-update" tabindex="-1" aria-labelledby="modalUpdate" aria-hidden="true">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
@@ -239,30 +262,48 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <form class="row g-3">
+              <form class="row g-3" id="form-update">
                 <div class="col-md-6">
                   <label for="discount" class="form-label">Giảm giá<span style="color: red;"> *</span></label>
                   <input type="number" name="discount" class="form-control" id="update-discount">
+                  <div class="invalid-feedback">
+                    Vui lòng điền số giảm giá (giảm giá > 0)
+                  </div>
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Số tiền tối thiểu<span style="color: red;"> *</span></label>
                   <input type="number" class="form-control" name="minPurchaseAmount" id="update-minPurchaseAmount">
+                  <div class="invalid-feedback">
+                    Vui lòng điền số tiền tối thiểu (lớn hơn hoặc bằng 0)
+                  </div>
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Số lượng</label>
-                  <input type="number" class="form-control" name="usageLimit" id="update-usageLimit">
+                  <input type="number" class="form-control" name="usageLimit" id="update-usageLimit" min="1">
+                  <div class="invalid-feedback">
+                    Số lượng không được nhỏ hơn 0
+                  </div>
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Số lần dùng</label>
-                  <input type="number" class="form-control" name="userLimit" id="update-userLimit">
+                  <input type="number" class="form-control" name="userLimit" id="update-userLimit" min="1">
+                  <div class="invalid-feedback">
+                    Số lần dùng phải lớn hơn 0
+                  </div>
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Ngày áp dụng<span style="color: red;"> *</span></label>
                   <input type="datetime-local" class="form-control" name="startDate" id="update-startDate">
+                  <div class="invalid-feedback">
+                    Vui lòng chọn ngày bắt đầu mã
+                  </div>
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Ngày kết thúc<span style="color: red;"> *</span></label>
                   <input type="datetime-local" class="form-control" name="endDate" id="update-endDate">
+                  <div class="invalid-feedback">
+                    Vui lòng chọn ngày kết thúc mã
+                  </div>
                 </div>
                 <div class="col-md-6">
                   <div style="margin-top: 13px;">
@@ -276,7 +317,10 @@
                 </div>
                 <div class="col-md-6 div-maxDiscount" style="display: none;">
                   <label class="form-label">Giảm tối đa</label>
-                  <input type="number" class="form-control" name="maxDiscount" id="update-maxDiscount">
+                  <input type="number" class="form-control" name="maxDiscount" id="update-maxDiscount" min="1">
+                  <div class="invalid-feedback">
+                    Phải lớn hơn 0
+                  </div>
                 </div>
                 <div class="col-md-12">
                   <label class="form-label">Chọn các brand áp dụng mã<span style="color: red;"> *</span></label>
@@ -291,7 +335,7 @@
                   <textarea type="text" class="form-control" id="update-description" name="description"></textarea>
                 </div>
                 <div class="col-12"></div>
-                <button type="button" onclick="updateVoucher()" style="max-width: 100px; margin-right: 10px; margin-left: auto;" data-bs-dismiss="modal" class="btn btn-primary">Cập nhật</button>
+                <button type="button" id="btn-form-update" style="max-width: 100px; margin-right: 10px; margin-left: auto;" class="btn btn-primary">Cập nhật</button>
                 <button type="button" style="max-width: 70px; margin-right: 8px;" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
               </form>
             </div>
@@ -375,11 +419,11 @@
       </div>
       </div>
 
-    <div class="toast-container bottom-0 end-0 p-3" style="z-index: 11">
-      <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-container top-0 end-0 p-3" style="z-index: 9999">
+      <div id="liveToast" style="display: none;" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="toast-header">
           <strong class="me-auto">Thông báo</strong>
-          <small>11 mins ago</small>
+          <small></small>
           <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
         <div class="toast-body">
@@ -389,6 +433,11 @@
     </div>
 
   </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/js/bootstrap-select.min.js" integrity="sha512-FHZVRMUW9FsXobt+ONiix6Z0tIkxvQfxtCSirkKc5Sb4TKHmqq1dZa8DphF0XqKb3ldLu/wgMa8mT6uXiLlRlw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script type="text/javascript">
       const urlParams = new URLSearchParams(window.location.search);
       const select_fill_type = document.getElementById('select-fill-type');
@@ -399,6 +448,8 @@
       const input_minPurchaseAmount = document.getElementById('minPurchaseAmount');
       const input_maxPurchaseAmount = document.getElementById('maxPurchaseAmount');
       const toast_message = document.getElementById('toast-message');
+      const modalUpdate = new bootstrap.Modal(document.getElementById('modal-update'));
+
 
       let page = urlParams.get('page'); // Lấy số trang hiện tại
       let size = urlParams.get('size');
@@ -410,7 +461,191 @@
       let minDiscount = null;
       let maxDiscount = null;
       let keywork = '';
-      
+
+      // Start Toast
+      var myToast = document.getElementById('liveToast');
+      var bootstrapToast = new bootstrap.Toast(myToast);
+
+      // Hiển thị toast
+      function showToast() {
+          myToast.style.display = 'block'; // Hiển thị lại
+          bootstrapToast.show();
+      }
+
+      // Sự kiện để ẩn hoàn toàn toast
+      myToast.addEventListener('hidden.bs.toast', function () {
+          myToast.style.display = 'none'; // Ẩn hoàn toàn khỏi DOM
+      });
+      // End Toast
+
+      // Start validation form create
+      function checkStartBeforeEnd(startDate, endDate) {
+        startDate = new Date(startDate)
+        endDate = new Date(endDate)
+        // So sánh thời gian của hai ngày
+        if (startDate.getTime() < endDate.getTime()) {
+            return true; // Ngày bắt đầu trước ngày kết thúc
+        } else if (startDate.getTime() === endDate.getTime()) {
+            // Nếu cùng ngày, kiểm tra giờ
+            const startHour = startDate.getHours();
+            const endHour = endDate.getHours();
+            
+            // Kiểm tra giờ
+            return startHour < endHour; 
+        }
+        return false; // Ngày bắt đầu không trước ngày kết thúc
+      }
+
+      // JavaScript để vô hiệu hóa việc submit form nếu có trường không hợp lệ
+        (function () {
+          'use strict';
+
+          const formCreate = document.querySelector('#form-create');
+          formCreate.addEventListener('submit', function (event) {
+              event.preventDefault(); // Ngăn chặn hành động submit form
+              event.stopPropagation(); // Ngăn sự kiện lan rộng ra ngoài
+              const form = this;
+              let isValid = true;
+              const discount = document.getElementById('discount')
+              if(discount.value <= 0 || discount.value == ''){
+                discount.classList.add('is-invalid');
+                isValid = false
+              }else {
+                discount.classList.remove('is-invalid');
+                discount.classList.add('is-valid')
+              }
+
+              const minPurchaseAmount = document.getElementById('create-minPurchaseAmount')
+              if(minPurchaseAmount.value < 0 || minPurchaseAmount.value == ''){
+                minPurchaseAmount.classList.add('is-invalid');
+                isValid = false
+              }else {
+                minPurchaseAmount.classList.remove('is-invalid');
+                minPurchaseAmount.classList.add('is-valid')
+              }
+
+              const startDate = document.getElementById('startDate');
+              const endDate = document.getElementById('endDate');
+              // kiểm tra ngày bắt đầu
+              if(startDate.value == ''){
+                startDate.classList.add('is-invalid')
+                isValid = false
+              }else {
+                startDate.classList.remove('is-invalid')
+              }
+              // kiểm tra ngày kết thúc
+              if(endDate.value == ""){
+                endDate.classList.add('is-invalid')
+                isValid = false;
+              }else {
+                endDate.classList.remove('is-invalid')
+              }
+              // kiểm tra ngày bắt đầu có trước ngày kết thúc không
+              if(startDate.value != '' && endDate.value != '' && !checkStartBeforeEnd(startDate.value, endDate.value)){
+                toast_message.innerHTML = "Vui lòng chọn ngày bắt đầu trước ngày kết thúc"
+                showToast()
+                isValid = false;
+                return;
+              }
+
+              // kiểm tra brand
+              const brandIds = document.getElementById('brandIds')
+              if (brandIds.selectedOptions.length <= 0) {
+                toast_message.innerHTML = "Vui lòng chọn brand để áp dụng mã"
+                showToast()
+                isValid = false;
+              } 
+              // Nếu form hợp lệ, cho phép submit
+              if (isValid && form.checkValidity()) {
+                form.submit();
+              }
+          }, false);
+
+          const formUpdate = document.querySelector('#form-update')
+          document.getElementById('btn-form-update').addEventListener('click', function (event) {
+              let isValid = true;
+              // Kiểm tra thủ công từng input
+              const discount = document.getElementById('update-discount')
+              if(discount.value <= 0 || discount.value == ''){
+                discount.classList.add('is-invalid');
+                isValid = false
+              }else {
+                discount.classList.remove('is-invalid');
+                discount.classList.add('is-valid')
+              }
+
+              const minPurchaseAmount = document.getElementById('update-minPurchaseAmount')
+              if(minPurchaseAmount.value < 0 || minPurchaseAmount.value == ''){
+                minPurchaseAmount.classList.add('is-invalid');
+                isValid = false
+              }else {
+                minPurchaseAmount.classList.remove('is-invalid');
+                minPurchaseAmount.classList.add('is-valid')
+              }
+
+              const startDate = document.getElementById('update-startDate');
+              const endDate = document.getElementById('update-endDate');
+              // kiểm tra ngày bắt đầu
+              if(startDate.value == ''){
+                startDate.classList.add('is-invalid')
+                isValid = false
+              }else {
+                startDate.classList.remove('is-invalid')
+              }
+              // kiểm tra ngày kết thúc
+              if(endDate.value == ""){
+                endDate.classList.add('is-invalid')
+                isValid = false;
+              }else {
+                endDate.classList.remove('is-invalid')
+              }
+              // kiểm tra ngày bắt đầu có trước ngày kết thúc không
+              if(startDate.value != '' && endDate.value != '' && !checkStartBeforeEnd(startDate.value, endDate.value)){
+                toast_message.innerHTML = "Vui lòng chọn ngày bắt đầu trước ngày kết thúc"
+                showToast()
+                isValid = false;
+                return;
+              }
+
+              const brandIds = document.getElementById('update-brand')
+              if (brandIds.selectedOptions.length <= 0) {
+                showToast()
+                toast_message.innerHTML = "Vui lòng chọn brand để áp dụng mã"
+                isValid = false;
+              } 
+              // Nếu form hợp lệ, cho phép submit
+              if (isValid && formUpdate.checkValidity()) {
+                updateVoucher();
+                // Đóng modal nếu form hợp lệ
+                modalUpdate.hide();
+              }
+          })
+        })();
+
+        function resetForm() {
+          var form = document.getElementById('form-update');
+          
+          // Xóa các class is-invalid và is-valid khỏi tất cả các trường input
+          var inputs = form.querySelectorAll('input');
+          inputs.forEach(function(input) {
+            input.classList.remove('is-invalid');
+            input.classList.remove('is-valid');
+          });
+
+          // Xóa class 'was-validated' khỏi form
+          form.classList.remove('was-validated');
+
+          // Reset giá trị form nếu cần
+          form.reset(); // Tùy chọn nếu bạn muốn reset luôn giá trị form
+        }
+
+        // Lắng nghe sự kiện khi modal được đóng
+        var modal = document.getElementById('modal-update');
+        modal.addEventListener('hidden.bs.modal', function () {
+          resetForm(); // Gọi hàm reset form khi modal đóng
+        });
+      // End validation form create
+
       // Start Fillter
       const fillter = async () => {
         type = select_fill_type.value;
@@ -599,9 +834,8 @@
             ids = [];
             updateResult(data); // Cập nhật kết quả vào DOM
             handleCheckbox();
-            const toast = new bootstrap.Toast(document.getElementById('liveToast'))
             toast_message.innerHTML = "Thay đổi trạng thái thành công"
-            toast.show()
+            showToast()
           })
           .catch((error) => {
             console.error("Fetch operation error:", error);
@@ -698,9 +932,8 @@
           }) 
           if (response.ok) {
             search(keywork);
-            const toast = new bootstrap.Toast(document.getElementById('liveToast'))
             toast_message.innerHTML = "Cập nhật thành công"
-            toast.show()
+            showToast()
           } else {
               const errorText = await response.text();
               throw new Error(`Error ${response.status}: ${errorText}`);
@@ -757,13 +990,13 @@
             }
         });
         $('.selectpicker').selectpicker('refresh');
-        let myModal = new bootstrap.Modal(document.getElementById('modal-update'));
-        myModal.show();
+        modalUpdate.show();
       }
       // End lấy dữ liệu hiển thị lên modal cập nhật
 
-      
     </script>
+
+<!-- Phân trang -->
     <script>
       let resultPage = "${currentPage}";
       let resultTotalPages = "${totalPages}";
@@ -851,9 +1084,5 @@
         goToPage(1);  // Hiển thị trang đầu tiên khi tải trang
       });
   </script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/js/bootstrap-select.min.js" integrity="sha512-FHZVRMUW9FsXobt+ONiix6Z0tIkxvQfxtCSirkKc5Sb4TKHmqq1dZa8DphF0XqKb3ldLu/wgMa8mT6uXiLlRlw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   </body>
 </html>
