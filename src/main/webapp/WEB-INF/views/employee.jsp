@@ -12,14 +12,23 @@
     <title>Employee</title>
 </head>
 <body>
+<form method="get" action="/employee/search">
+    <h2>Search</h2>
+    <input type="text" name="keyword" placeholder="Tìm kiếm..." value="${keyword}">
+    <button type="submit">Tìm kiếm</button>
+</form>
+<form action="/employee/filter" method="get">
+    <h2>Filter</h2>
+    <label for="minSalary">Min Salary:</label>
+    <input type="number" id="minSalary" name="minSalary" step="0.01">
 
-<form:form action="/employee/search" method="get" modelAttribute="p">
-    <p>Search
-        <input type="text" name="name" placeholder="search name" required>
-    </p>
-    <button type="submit">Search</button>
-</form:form>
+    <label for="maxSalary">Max Salary:</label>
+    <input type="number" id="maxSalary" name="maxSalary" step="0.01">
+
+    <button type="submit">Filter</button>
+</form>
 <form:form action="/employee/add" method="post" modelAttribute="p">
+    <h2>THÔNG TIN NHÂN VIÊN</h2>
     <p> Name: <form:input path="name"/>
     </p>
     <p> Phone Number: <form:input path="phone_number"/>
@@ -48,6 +57,7 @@
     <button>Add</button>
 </form:form>
 <table border="1">
+    <h1>DANH SÁCH NHÂN VIÊN</h1>
     <tr>
         <th>Id</th>
         <th>Name</th>

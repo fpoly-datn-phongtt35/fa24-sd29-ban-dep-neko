@@ -98,10 +98,43 @@ public class EmployeeController {
     }
 
     @GetMapping("/search")
-    public String search(@RequestParam("name") String name, Model model) {
-        List<Employee> employees = employeeRepository.findByNameContaining(name);
-        model.addAttribute("listE", employees);
-        model.addAttribute("listR", roleRepository.findAll());
+    public String search(@RequestParam(defaultValue = "0") Integer p,
+                          @RequestParam(required = false) String keyword,
+                          Model model) {
+        Pageable pageable = PageRequest.of(p, 5);
+        Page<Employee> page;
+
+        // Kiểm tra nếu có từ khóa tìm kiếm
+        if (keyword != null && !keyword.isEmpty()) {
+            page = employeeRepository.searchByKeyword(keyword, pageable);
+            model.addAttribute("keyword", keyword);
+        } else {
+            page = employeeRepository.findAll(pageable);
+        }
+
+        model.addAttribute("p", new Employee());
+        model.addAttribute("page", page);
+        return "employee";
+    }
+
+    @GetMapping("/filter")
+    public String hienThi(
+            @RequestParam(defaultValue = "0") Integer p,
+            @RequestParam(required = false) Float minSalary,
+            @RequestParam(required = false) Float maxSalary,
+            Model model) {
+
+        Pageable pageable = PageRequest.of(p, 5);
+        Page<Employee> page;
+        if (minSalary != null && maxSalary != null) {
+            // Lọc theo khoảng lương
+            page = employeeRepository.findBySalaryRange(minSalary, maxSalary, pageable);
+        } else {
+            // Nếu không có giá trị lọc lương, hiển thị tất cả
+            page = employeeRepository.findAll(pageable);
+        }
+        model.addAttribute("p", new Employee());
+        model.addAttribute("page", page);
         return "employee";
     }
 
