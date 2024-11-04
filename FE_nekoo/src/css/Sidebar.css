@@ -1,0 +1,51 @@
+.sidebar {
+  width: 250px;
+  background-color: #f4f4f4;
+  padding: 20px;
+  position: fixed;
+  height: 100vh; /* Ensure it stretches the full height of the viewport */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+.sidebar h3 {
+  margin-bottom: 20px; /* Space below the title */
+  font-size: 20px; /* Slightly larger font for the title */
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  margin: 15px 0;
+}
+
+.sidebar ul li a {
+  display: block; /* Ensure the whole line is clickable */
+  padding: 10px;
+  text-decoration: none;
+  color: #333;
+  border-radius: 4px; /* Rounded corners for links */
+  transition: background-color 0.3s; /* Smooth transition */
+}
+
+.sidebar ul li a:hover {
+  background-color: #ddd; /* Background change on hover */
+}
+
+.logout-button {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  width: 100%;
+  border-radius: 4px;
+  margin-top: 20px;
+  transition: background-color 0.3s; /* Smooth transition */
+}
+
+.logout-button:hover {
+  background-color: #c0392b; /* Darker shade on hover */
+}
