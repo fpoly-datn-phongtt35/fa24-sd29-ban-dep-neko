@@ -145,118 +145,151 @@ const ManageCustomer = () => {
 
   return (
     <>
-      <SidebarStaff />
-      <div className="container">
-        <h2>Danh Sách Khách hàng</h2>
-
-        <input
-          type="text"
-          placeholder="Tìm kiếm khách hàng... (Tên đăng nhập)"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="search-input"
-        />
-
-        <table className="staff-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Tên Đăng Nhập</th>
-              <th>Tên</th>
-              <th>Ngày Sinh</th>
-              <th>Số Điện Thoại</th>
-              <th>CCCD</th>
-              <th>Trạng Thái</th>
-              <th>Ngày Tạo</th>
-              <th>Thao Tác</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentItems.map((member) => (
-              <tr key={member.id}>
-                <td>{member.id}</td>
-                <td>{member.username}</td>
-                <td>{member.name || "N/A"}</td>
-                <td>
-                  {member.dateOfBirth
-                    ? new Date(member.dateOfBirth).toLocaleDateString()
-                    : "N/A"}
-                </td>
-                <td>{member.phone || "N/A"}</td>
-                <td>{member.cccd || "N/A"}</td>
-                <td>{member.status ? "Hoạt động" : "Ngừng hoạt động"}</td>
-                <td>{new Date(member.createAt).toLocaleString()}</td>
-                <td>
-                  <button onClick={() => handleEditClick(member)}>
-                    Cập nhật
-                  </button>
-                  <button onClick={() => toggleStatus(member)}>
-                    {member.status ? "Vô hiệu hóa" : "Kích hoạt"}
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        <div className="pagination">
-          <button
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
-          >
-            Trang trước
-          </button>
-          <span>{`Trang ${currentPage} trong tổng ${totalPages} trang `}</span>
-          <button
-            onClick={() =>
-              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-            }
-            disabled={currentPage === totalPages}
-          >
-            Trang sau
-          </button>
+      <div className="row">
+        <div className="col-2">
+          <SidebarStaff />
         </div>
 
-        {editCustomer && (
-          <div className="edit-form">
-            <h3>Cập nhật khách hàng</h3>
-            <label>
-              Tên:
-              <input
-                type="text"
-                value={editName}
-                onChange={(e) => setEditName(e.target.value)}
-              />
-            </label>
-            <label>
-              Ngày Sinh:
-              <input
-                type="date"
-                value={editDateOfBirth}
-                onChange={(e) => setEditDateOfBirth(e.target.value)}
-              />
-            </label>
-            <label>
-              Số Điện Thoại:
-              <input
-                type="text"
-                value={editPhone}
-                onChange={(e) => setEditPhone(e.target.value)}
-              />
-            </label>
-            <label>
-              CCCD:
-              <input
-                type="text"
-                value={editCCCD}
-                onChange={(e) => setEditCCCD(e.target.value)}
-              />
-            </label>
-            <button onClick={handleUpdate}>Lưu</button>
-            <button onClick={() => setEditCustomer(null)}>Hủy</button>
+        <div className="col-10">
+          <div className="container">
+            <h2>Danh Sách khách hàng</h2>
+
+            <input
+              type="text"
+              placeholder="Tìm kiếm khách hàng... (Tên đăng nhập)"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="form-control mb-3" // Bootstrap class for styling input
+            />
+
+            <table className="table table-bordered table-striped">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Tên Đăng Nhập</th>
+                  <th>Tên</th>
+                  <th>Ngày Sinh</th>
+                  <th>Số Điện Thoại</th>
+                  <th>CCCD</th>
+                  <th>Trạng Thái</th>
+                  <th>Ngày Tạo</th>
+                  <th>Thao Tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentItems.length > 0 ? (
+                  currentItems.map((member) => (
+                    <tr key={member.id}>
+                      <td>{member.id}</td>
+                      <td>{member.username}</td>
+                      <td>{member.name || "N/A"}</td>
+                      <td>
+                        {member.dateOfBirth
+                          ? new Date(member.dateOfBirth).toLocaleDateString()
+                          : "N/A"}
+                      </td>
+                      <td>{member.phone || "N/A"}</td>
+                      <td>{member.cccd || "N/A"}</td>
+                      <td>{member.status ? "Hoạt động" : "Ngừng hoạt động"}</td>
+                      <td>{new Date(member.createAt).toLocaleString()}</td>
+                      <td>
+                        <button
+                          className="btn btn-primary"
+                          onClick={() => handleEditClick(member)}
+                        >
+                          Cập nhật
+                        </button>
+                        <button
+                          className="btn btn-warning"
+                          onClick={() => toggleStatus(member)}
+                        >
+                          {member.status ? "Vô hiệu hóa" : "Kích hoạt"}
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="9">Không có khách hàng nào!</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+
+            <div className="pagination">
+              <button
+                className="btn btn-secondary"
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+              >
+                Trang trước
+              </button>
+              <span>{`Trang ${currentPage} trong tổng ${totalPages} trang `}</span>
+              <button
+                className="btn btn-secondary"
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
+                disabled={currentPage === totalPages}
+              >
+                Trang sau
+              </button>
+            </div>
+
+            {editCustomer && (
+              <div className="edit-form">
+                <h3>Cập nhật khách hàng</h3>
+                <label>
+                  Tên:
+                  <input
+                    type="text"
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    className="form-control mb-3"
+                  />
+                </label>
+                <label>
+                  Ngày Sinh:
+                  <input
+                    type="date"
+                    value={editDateOfBirth}
+                    onChange={(e) => setEditDateOfBirth(e.target.value)}
+                    className="form-control mb-3"
+                  />
+                </label>
+                <label>
+                  Số Điện Thoại:
+                  <input
+                    type="text"
+                    value={editPhone}
+                    onChange={(e) => setEditPhone(e.target.value)}
+                    className="form-control mb-3"
+                  />
+                </label>
+                <label>
+                  CCCD:
+                  <input
+                    type="text"
+                    value={editCCCD}
+                    onChange={(e) => setEditCCCD(e.target.value)}
+                    className="form-control mb-3"
+                  />
+                </label>
+                <button className="btn btn-success" onClick={handleUpdate}>
+                  Lưu
+                </button>
+                <button
+                  className="btn btn-danger"
+                  onClick={() => setEditCustomer(null)}
+                >
+                  Hủy
+                </button>
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
+
       <ToastContainer />
     </>
   );

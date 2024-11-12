@@ -15,8 +15,9 @@ const Login = () => {
       const data = await login(username, password);
       console.log("Login successful:", data);
 
-      // Lưu Bearer token vào localStorage
+      // Lưu Bearer token và roleName vào localStorage
       localStorage.setItem("token", data.values.token);
+      localStorage.setItem("roleName", data.values.roleName);
 
       // Điều hướng theo roleName
       if (data.values.roleName === "MANAGER") {
@@ -24,12 +25,16 @@ const Login = () => {
       } else if (data.values.roleName === "STAFF") {
         navigate("/manageCustomer");
       } else if (data.values.roleName === "CUSTOMER") {
-        navigate("/home");
+        navigate("/shop");
       }
     } catch (err) {
       setError(err.response.data.message);
       console.error("Login failed:", err);
     }
+  };
+
+  const handleRegisterRedirect = () => {
+    navigate("/registor");
   };
 
   return (
@@ -59,6 +64,9 @@ const Login = () => {
           <button type="submit" className="button">
             Đăng nhập
           </button>
+          <span className="register-link" onClick={handleRegisterRedirect}>
+            Bạn chưa có tài khoản, Đăng kí ngay!!!
+          </span>
         </form>
       </div>
     </div>

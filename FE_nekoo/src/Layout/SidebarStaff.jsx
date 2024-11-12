@@ -15,10 +15,10 @@ const Sidebar = () => {
       <h3>Nhân viên</h3>
       <ul>
         <li>
-          <Link to="/manageStaff">Quản lý Khách hàng</Link>
+          <Link to="/manageCustomer">Quản lý Khách hàng</Link>
         </li>
         <li>
-          <Link to="/manageProduct">Quản lý Hoá đơn</Link>
+          <Link to="/manageBill">Quản lý Hoá đơn</Link>
         </li>
       </ul>
       <button onClick={handleLogout} className="logout-button">

@@ -1,14 +1,4 @@
-/* src/Login.css */
-
-body,
-html {
-  height: 100%;
-  margin: 0;
-  font-family: "Roboto", sans-serif; /* More modern font */
-  background-color: #f3f4f6; /* Light gray background for contrast */
-}
-
-.container_login {
+.container_registor {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -77,13 +67,13 @@ html {
   font-size: 14px;
 }
 
-.register-link {
+.login-link {
   cursor: pointer;
   text-decoration: none; /* Gỡ bỏ gạch chân mặc định */
   color: black; /* Màu chữ mặc định */
 }
 
-.register-link:hover {
+.login-link:hover {
   color: blue; /* Màu chữ khi hover */
   text-decoration: underline; /* Gạch chân khi hover */
 }

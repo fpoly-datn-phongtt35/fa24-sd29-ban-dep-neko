@@ -1,0 +1,63 @@
+.not-found-body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f7f7f7; /* Light gray background */
+  color: #333; /* Dark gray text */
+}
+
+.not-found-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh; /* Full height */
+}
+
+.not-found-section {
+  text-align: center;
+  padding: 20px;
+  background-color: #fff; /* White background for the section */
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+.not-found-title {
+  font-size: 5rem; /* Large size for the 404 */
+  color: #000; /* Black color */
+  margin-bottom: 10px;
+}
+
+.not-found-message {
+  font-size: 1.5rem; /* Medium size for the message */
+  color: #666; /* Gray color */
+  margin-bottom: 20px;
+}
+
+.not-found-button {
+  background-color: #333; /* Dark gray for button background */
+  color: #fff; /* White text */
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+.not-found-button:hover {
+  background-color: #555; /* Slightly lighter gray on hover */
+}
+
+.not-found-back-to-top {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #333; /* Dark gray */
+  color: #fff; /* White */
+  border-radius: 50%;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: background 0.3s ease;
+}
+
+.not-found-back-to-top:hover {
+  background: #555; /* Lighten on hover */
+}

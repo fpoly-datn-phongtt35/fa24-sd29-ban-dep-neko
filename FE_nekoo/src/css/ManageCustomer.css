@@ -10,20 +10,20 @@ h2 {
   font-size: 24px; /* Larger and more prominent */
 }
 
-.staff-table {
+.customer-table {
   width: 100%; /* Full width */
   border-collapse: collapse;
   margin-bottom: 20px; /* Space below the table */
 }
 
-.staff-table th,
-.staff-table td {
+.customer-table th,
+.customer-table td {
   border: 1px solid #ddd;
   padding: 12px; /* More padding for better readability */
-  text-align: left;
+  text-align: centercs;
 }
 
-.staff-table th {
+.customer-table th {
   background-color: #f2f2f2;
   font-weight: bold;
 }
@@ -31,7 +31,6 @@ h2 {
 .search-input {
   width: 100%; /* Full width for search */
   max-width: 400px; /* Limit width */
-  margin-bottom: 20px;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -110,4 +109,15 @@ h2 {
 
 .edit-form button:last-child:hover {
   background-color: #c0392b;
+}
+
+.top-controls {
+  display: flex;
+  justify-content: space-between; /* Đẩy phần tử ra hai đầu */
+  align-items: center; /* Căn giữa theo chiều dọc */
+  margin-bottom: 20px;
+}
+
+.search-input {
+  max-width: 400px;
 }
