@@ -70,7 +70,7 @@ export const addToCart = async (token, dataCart) => {
     throw new Error("Data format is not as expected");
   }
 
-  return data.values;
+  return data;
 };
 
 export const loadCarts = async (token) => {

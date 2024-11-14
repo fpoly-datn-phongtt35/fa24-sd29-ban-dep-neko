@@ -16,6 +16,7 @@ const Login = () => {
       console.log("Login successful:", data);
 
       // Lưu Bearer token và roleName vào localStorage
+      localStorage.setItem("userId", data.values.userId);
       localStorage.setItem("token", data.values.token);
       localStorage.setItem("roleName", data.values.roleName);
 

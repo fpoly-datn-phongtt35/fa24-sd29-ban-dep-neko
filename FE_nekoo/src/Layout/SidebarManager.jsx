@@ -24,6 +24,12 @@ const Sidebar = () => {
           <Link to="/manageVoucher">Quản lý Voucher</Link>
         </li>
         <li>
+          <Link to="/manageCategory">Quản lý loại sản phẩm</Link>
+        </li>
+        <li>
+          <Link to="/manageTransportation">Quản lý vận chuyển</Link>
+        </li>
+        <li>
           <Link to="/manageOrder">Quản lý Đơn Hàng</Link>
         </li>
       </ul>

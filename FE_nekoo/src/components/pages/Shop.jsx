@@ -13,35 +13,50 @@ import "../../css/shop/style.css";
 //icon
 import { FaUser } from "react-icons/fa";
 import { HiShoppingCart } from "react-icons/hi";
+import { Link } from "react-router-dom";
 
 const Shop = () => {
   const [products, setProducts] = useState([]);
   const [searchName, setSearchName] = useState(""); // Lưu trữ giá trị tìm kiếm
   const [sortKey, setSortKey] = useState("name"); // Sắp xếp theo trường (tên hoặc giá)
-  const [sortOrder, setSortOrder] = useState("asc"); 
+  const [sortOrder, setSortOrder] = useState("asc");
   let pageSize = 9;
   const [currentPage, setCurrentPage] = useState(0); // Trang hiện tại
   const [totalPages, setTotalPages] = useState(0); // Tổng số trang
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
-      fetchProducts(currentPage, pageSize, sortKey, sortOrder, searchName);
+    fetchProducts(currentPage, pageSize, sortKey, sortOrder, searchName);
   }, [currentPage, sortKey, sortOrder]);
 
-  const fetchProducts = async (currentPage, pageSize, sortKey, sortOrder, searchName) => {
+  const fetchProducts = async (
+    currentPage,
+    pageSize,
+    sortKey,
+    sortOrder,
+    searchName
+  ) => {
     const token = localStorage.getItem("token");
     try {
-      const productList = await loadShop(token, currentPage, pageSize, sortKey, sortOrder, searchName);
+      const productList = await loadShop(
+        token,
+        currentPage,
+        pageSize,
+        sortKey,
+        sortOrder,
+        searchName
+      );
       setProducts(productList);
       setTotalPages(productList.page.totalPages); // Set tổng số trang
-      setCurrentPage(productList.page.number); // Cập nh
+      setCurrentPage(productList.page.number);
     } catch (error) {
-      console.error("Error fetching products:", error);
+      console.error("Lỗi khi tải sản phẩm:", error);
     }
   };
 
   useEffect(() => {
     fetchProducts(0, pageSize, sortKey, sortOrder, searchName);
-    setCurrentPage(0)
+    setCurrentPage(0);
   }, [searchName]);
 
   // Hàm chuyển sang trang kế tiếp
@@ -91,15 +106,23 @@ const Shop = () => {
                   <div className="site-top-icons">
                     <ul>
                       <li>
-                        <a href="#">
+                        <Link to={"/customer"}>
                           <FaUser />
-                        </a>
+                        </Link>
                       </li>
                       <li>
-                        <a href="cart.html" className="site-cart">
+                        <Link to={"/cart"} className="site-cart">
                           <HiShoppingCart />
-                          <span className="count">2</span>
-                        </a>
+                        </Link>
+                      </li>
+                      <li>
+                        <Link to={"/login"} className="site-cart">
+                          {token ? (
+                            <span>Đăng xuất</span>
+                          ) : (
+                            <span>Đăng nhập</span>
+                          )}
+                        </Link>
                       </li>
                     </ul>
                   </div>
@@ -114,27 +137,27 @@ const Shop = () => {
             <div className="container">
               <ul className="site-menu js-clone-nav d-none d-md-block">
                 <li className="active">
-                  <a href="shop.html">SHOP</a>
+                  <Link to="/shop">CỬA HÀNG</Link>
                 </li>
                 <li>
-                  <a href="cart.html">CART</a>
-                </li>
-                <li>
-                  <a href="contact.html">CONTACT</a>
+                  <Link to="/cart">GIỎ HÀNG</Link>
                 </li>
               </ul>
             </div>
           </nav>
         </header>
 
-        <div className="site-section">
+        <div
+          className="site-section"
+          style={{ paddingBottom: "80px", paddingTop: "0" }}
+        >
           <div className="container">
             <div className="row mb-5">
-              <div className="col-md-9 order-2">
+              <div className="col-md-12 order-2">
                 <div className="row">
                   <div className="col-md-12 mb-5">
                     <div className="float-md-left mb-4">
-                      <h2 className="text-black h5">All Product</h2>
+                      <h2 className="text-black h5">Tất Cả Sản Phẩm</h2>
                     </div>
                   </div>
                 </div>
@@ -142,7 +165,7 @@ const Shop = () => {
                 <div>
                   <input
                     type="text"
-                    placeholder="Search by name..."
+                    placeholder="Tìm kiếm theo tên..."
                     value={searchName}
                     onChange={handleSearchChange}
                   />
@@ -150,40 +173,40 @@ const Shop = () => {
 
                 {/* Sắp xếp */}
                 <div>
-                  <select value={`${sortKey},${sortOrder}`} onChange={handleSortChange}>
+                  <select
+                    value={`${sortKey},${sortOrder}`}
+                    onChange={handleSortChange}
+                  >
                     <option value="name,asc">Theo tên ⬆︎</option>
                     <option value="name,desc">Theo tên ⬇︎</option>
-                    <option value="price.price,asc">theo giá ⬆︎</option>
+                    <option value="price.price,asc">Theo giá ⬆︎</option>
                     <option value="price.price,desc">Theo giá ⬇︎</option>
                   </select>
                 </div>
                 <div className="row mb-5">
                   {products?.content?.map((product) => (
-                    <div
-                      key={product.p_id}
-                      className="col-sm-6 col-lg-4 mb-4"
-                    >
+                    <div key={product.p_id} className="col-sm-6 col-lg-4 mb-4">
                       <div className="block-4 text-center border">
                         <figure className="block-4-image">
-                          <a href="shop-single.html">
+                          <Link to={`/detail/${product.p_id}`}>
                             <img
                               src={`data:image/jpeg;base64,${product.productDetails[0]?.image}`}
-                              alt="Product Image"
+                              alt="Hình Ảnh Sản Phẩm"
                               className="img-fluid"
                             />
-                          </a>
+                          </Link>
                         </figure>
                         <div className="block-4-text p-4">
                           <h3>
-                            <a href="shop-single.html">
-                              {product.name || "Product Name"}
-                            </a>
+                            <Link to={`/detail/${product.p_id}`}>
+                              {product.name || "Tên Sản Phẩm"}
+                            </Link>
                           </h3>
                           <p className="mb-0">
-                            {product.material || "Product Material"}
+                            {product.material || "Chất Liệu Sản Phẩm"}
                           </p>
                           <p className="text-primary font-weight-bold">
-                            $ {product.price || "Price not available"}
+                            $ {product.price || "Không có giá"}
                           </p>
                         </div>
                       </div>
@@ -193,115 +216,26 @@ const Shop = () => {
                 <div className="row">
                   <div className="col-md-12 text-center">
                     {/* Phân trang */}
-                    {totalPages > 0 &&
+                    {totalPages > 0 && (
                       <div className="pagination">
-                      <button onClick={prevPage} disabled={currentPage === 0}>
-                        Trước
-                      </button>
-                      <span>
-                        Trang {currentPage + 1} / {totalPages}
-                      </span>
-                      <button onClick={nextPage} disabled={currentPage === totalPages - 1}>
-                        Sau
-                      </button>
-                    </div>
-                    }
-                      
+                        <button onClick={prevPage} disabled={currentPage === 0}>
+                          Trước
+                        </button>
+                        <span>
+                          Trang {currentPage + 1} / {totalPages}
+                        </span>
+                        <button
+                          onClick={nextPage}
+                          disabled={currentPage === totalPages - 1}
+                        >
+                          Sau
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
-              <div className="col-md-3 order-1 mb-5 mb-md-0">
-                <div className="border p-4 rounded mb-4">
-                  <h3 className="mb-3 h6 text-uppercase text-black d-block">
-                    Categories
-                  </h3>
-                  <ul className="list-unstyled mb-0">
-                    <li className="mb-1">
-                      <a href="#" className="d-flex">
-                        <span>Men</span>{" "}
-                        <span className="text-black ml-auto">(2,220)</span>
-                      </a>
-                    </li>
-                    <li className="mb-1">
-                      <a href="#" className="d-flex">
-                        <span>Women</span>{" "}
-                        <span className="text-black ml-auto">(2,550)</span>
-                      </a>
-                    </li>
-                    <li className="mb-1">
-                      <a href="#" className="d-flex">
-                        <span>Children</span>{" "}
-                        <span className="text-black ml-auto">(2,124)</span>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div className="border p-4 rounded mb-4">
-                  <div className="mb-4">
-                    <h3 className="mb-3 h6 text-uppercase text-black d-block">
-                      Filter by Price
-                    </h3>
-                    <div id="slider-range" className="border-primary" />
-                    <input
-                      type="text"
-                      name="text"
-                      id="amount"
-                      className="form-control border-0 pl-0 bg-white"
-                      disabled=""
-                    />
-                  </div>
-                  <div className="mb-4">
-                    <h3 className="mb-3 h6 text-uppercase text-black d-block">
-                      Size
-                    </h3>
-                    <label htmlFor="s_sm" className="d-flex">
-                      <input type="checkbox" id="s_sm" className="mr-2 mt-1" />{" "}
-                      <span className="text-black">Small (2,319)</span>
-                    </label>
-                    <label htmlFor="s_md" className="d-flex">
-                      <input type="checkbox" id="s_md" className="mr-2 mt-1" />{" "}
-                      <span className="text-black">Medium (1,282)</span>
-                    </label>
-                    <label htmlFor="s_lg" className="d-flex">
-                      <input type="checkbox" id="s_lg" className="mr-2 mt-1" />{" "}
-                      <span className="text-black">Large (1,392)</span>
-                    </label>
-                  </div>
-                  <div className="mb-4">
-                    <h3 className="mb-3 h6 text-uppercase text-black d-block">
-                      Color
-                    </h3>
-                    <a
-                      href="#"
-                      className="d-flex color-item align-items-center"
-                    >
-                      <span className="bg-danger color d-inline-block rounded-circle mr-2" />{" "}
-                      <span className="text-black">Red (2,429)</span>
-                    </a>
-                    <a
-                      href="#"
-                      className="d-flex color-item align-items-center"
-                    >
-                      <span className="bg-success color d-inline-block rounded-circle mr-2" />{" "}
-                      <span className="text-black">Green (2,298)</span>
-                    </a>
-                    <a
-                      href="#"
-                      className="d-flex color-item align-items-center"
-                    >
-                      <span className="bg-info color d-inline-block rounded-circle mr-2" />{" "}
-                      <span className="text-black">Blue (1,075)</span>
-                    </a>
-                    <a
-                      href="#"
-                      className="d-flex color-item align-items-center"
-                    >
-                      <span className="bg-primary color d-inline-block rounded-circle mr-2" />{" "}
-                      <span className="text-black">Purple (1,075)</span>
-                    </a>
-                  </div>
-                </div>
-              </div>
+              <div className="col-md-3 order-1 mb-5 mb-md-0"></div>
             </div>
           </div>
         </div>

@@ -8,14 +8,19 @@ import {
   loadProducts,
   addProduct,
   updateProduct,
+  updateProductVoucher,
   toggleProductStatus,
 } from "../../services/productService";
+import { fetchVouchersEnable } from "../../services/voucherService";
+import { loadCategoriesAvailable } from "../../services/categoryService";
 import "react-toastify/dist/ReactToastify.css";
 import { Modal, Button } from "react-bootstrap"; // Import Modal and Button from react-bootstrap
 
 const ManageProduct = () => {
   useAuthorization(["MANAGER"]);
   const [products, setProducts] = useState([]);
+  const [vouchers, setVouchers] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [newProduct, setNewProduct] = useState({
@@ -30,12 +35,20 @@ const ManageProduct = () => {
   ]);
   const [showAddForm, setShowAddForm] = useState(false);
   const [showUpdateForm, setShowUpdateForm] = useState(false);
+  const [showUpdateVoucherForm, setShowUpdateVoucherForm] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState({
     p_id: "",
     name: "",
     material: "",
     vat: "",
     price: "",
+  });
+  const [updateDiscount, setUpdateDiscount] = useState({
+    voucherId: "",
+    productId: "",
+    startDate: "",
+    endDate: "",
+    quantity: "",
   });
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
@@ -47,7 +60,11 @@ const ManageProduct = () => {
     setLoading(true);
     try {
       const productsData = await loadProducts(token);
+      const categoriesData = await loadCategoriesAvailable(token);
+      const voucherData = await fetchVouchersEnable(token);
+      setVouchers(voucherData);
       setProducts(productsData);
+      setCategories(categoriesData);
     } catch (error) {
       console.error("Không thể tải sản phẩm:", error);
       toast.error("Không thể tải danh sách sản phẩm!");
@@ -127,6 +144,15 @@ const ManageProduct = () => {
     setShowUpdateForm(true); // Show the update modal
   };
 
+  //update
+  const handleUpdateVoucherClick = (product) => {
+    setUpdateDiscount({
+      ...updateDiscount,
+      productId: product.p_id,
+    });
+    setShowUpdateVoucherForm(true);
+  };
+
   const handleUpdateInputChange = (e) => {
     const { name, value } = e.target;
     setSelectedProduct((prevProduct) => ({
@@ -145,6 +171,35 @@ const ManageProduct = () => {
     } catch (error) {
       console.error("Cập nhật sản phẩm không thành công", error);
       toast.error("Cập nhật sản phẩm không thành công!");
+    }
+  };
+  const handleUpdateVoucherSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      // Chuyển đổi startDate và endDate từ chuỗi sang ISO 8601 cho Instant
+      const startDateInstant = new Date(updateDiscount.startDate).toISOString();
+      const endDateInstant = new Date(updateDiscount.endDate).toISOString();
+
+      const updatedDiscountData = {
+        ...updateDiscount,
+        startDate: startDateInstant,
+        endDate: endDateInstant,
+      };
+
+      await updateProductVoucher(updatedDiscountData, token);
+      setUpdateDiscount({
+        voucherId: "",
+        productId: "",
+        startDate: "",
+        endDate: "",
+        quantity: "",
+      });
+      toast.success("Cập nhật mã giảm giá sản phẩm thành công!");
+      setShowUpdateVoucherForm(false);
+      fetchProducts(); // Làm mới danh sách sản phẩm sau khi cập nhật
+    } catch (error) {
+      console.error("Cập nhật mã giảm giá sản phẩm không thành công", error);
+      toast.error("Cập nhật mã giảm giá sản phẩm không thành công!");
     }
   };
   //dis-enable
@@ -248,6 +303,12 @@ const ManageProduct = () => {
                             Cập nhật
                           </button>
                           <button
+                            className="btn btn-info"
+                            onClick={() => handleUpdateVoucherClick(product)}
+                          >
+                            Thêm voucher
+                          </button>
+                          <button
                             className="btn btn-danger"
                             onClick={() => handleToggleStatus(product.p_id)}
                           >
@@ -338,14 +399,14 @@ const ManageProduct = () => {
                   </label>
                   <label>
                     Category ID:
-                    <input
-                      type="text"
-                      name="c_Id"
-                      value={newProduct.category.c_Id}
-                      onChange={handleInputChange}
-                      className="form-control"
-                      required
-                    />
+                    <select>
+                      <option value="">Chọn danh mục</option>
+                      {categories.map((category) => (
+                        <option key={category.c_Id} value={category.c_Id}>
+                          {category.name}
+                        </option>
+                      ))}
+                    </select>
                   </label>
 
                   {productDetails.map((detail, index) => (
@@ -472,6 +533,97 @@ const ManageProduct = () => {
                   </label>
                   <button type="submit" className="btn btn-primary mt-3">
                     Cập nhật
+                  </button>
+                </form>
+              </Modal.Body>
+            </Modal>
+            <Modal
+              show={showUpdateVoucherForm}
+              onHide={() => setShowUpdateVoucherForm(false)}
+            >
+              <Modal.Header closeButton>
+                <Modal.Title>Cập nhật mã giảm giá sản phẩm</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <form onSubmit={handleUpdateVoucherSubmit}>
+                  <label>
+                    Mã giảm giá:
+                    <select
+                      style={{ margin: "0 67px 0 0" }}
+                      name="voucherId"
+                      value={updateDiscount.voucherId}
+                      onChange={(e) =>
+                        setUpdateDiscount({
+                          ...updateDiscount,
+                          voucherId: e.target.value,
+                        })
+                      }
+                      className="form-control"
+                      required
+                    >
+                      <option value="">Chọn mã giảm giá</option>
+                      {vouchers.map((voucher) => (
+                        <option key={voucher.v_id} value={voucher.v_id}>
+                          {voucher.discount} VND
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label>
+                    Số lượng:
+                    <input
+                      type="number"
+                      name="quantity"
+                      value={updateDiscount.quantity}
+                      onChange={(e) =>
+                        setUpdateDiscount({
+                          ...updateDiscount,
+                          quantity: e.target.value,
+                        })
+                      }
+                      className="form-control"
+                      required
+                    />
+                  </label>
+                  <div className="d-flex">
+                    <label>
+                      Ngày bắt đầu:
+                      <input
+                        style={{ margin: "0 110px 0 0" }}
+                        type="date"
+                        name="startDate"
+                        value={updateDiscount.startDate}
+                        onChange={(e) =>
+                          setUpdateDiscount({
+                            ...updateDiscount,
+                            startDate: e.target.value,
+                          })
+                        }
+                        className="form-control"
+                        required
+                      />
+                    </label>
+                    <label>
+                      Ngày kết thúc:
+                      <input
+                        style={{ margin: "0 110px 0 0" }}
+                        type="date"
+                        name="endDate"
+                        value={updateDiscount.endDate}
+                        onChange={(e) =>
+                          setUpdateDiscount({
+                            ...updateDiscount,
+                            endDate: e.target.value,
+                          })
+                        }
+                        className="form-control"
+                        required
+                      />
+                    </label>
+                  </div>
+
+                  <button type="submit" className="btn btn-primary">
+                    Cập nhật voucher
                   </button>
                 </form>
               </Modal.Body>

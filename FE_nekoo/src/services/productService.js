@@ -66,6 +66,25 @@ export const updateProduct = async (productData, token) => {
 
   return await response.json(); // Return the response if needed
 };
+export const updateProductVoucher = async (productData, token) => {
+  const response = await fetch(
+    `http://localhost:8080/api/voucher/createDiscount`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // Include the token in the request
+      },
+      body: JSON.stringify(productData), // Convert productData to JSON format
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to update product");
+  }
+
+  return await response.json(); // Return the response if needed
+};
 
 export const toggleProductStatus = async (productId, token) => {
   const response = await fetch(`${API_BASE_URL}/disable/${productId}`, {

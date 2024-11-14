@@ -47,3 +47,28 @@ export const createProductDetail = async (formData, token) => {
     return null;
   }
 };
+export const updateProductDetail = async (formData, token) => {
+  try {
+    const response = await axios.put(
+      "http://localhost:8080/api/productDetail/update", // API endpoint của bạn
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data", // Đảm bảo Content-Type là multipart/form-data để gửi tệp
+        },
+      }
+    );
+
+    if (response.data.code === 200 && response.data.message === "success") {
+      return response.data.values; // Trả về dữ liệu nếu thành công
+    } else {
+      toast.error("Không thể thêm chi tiết sản phẩm!");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    toast.error("Lỗi khi gửi dữ liệu lên server!");
+    return null;
+  }
+};

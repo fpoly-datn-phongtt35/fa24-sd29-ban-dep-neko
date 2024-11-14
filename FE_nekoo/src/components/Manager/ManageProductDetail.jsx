@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import {
   fetchProductDetails,
   createProductDetail,
+  updateProductDetail, // Import the update function from your service
 } from "../../services/productDeetailService";
 import SidebarManager from "../../Layout/SidebarManager";
 import { Modal, Button } from "react-bootstrap";
@@ -19,6 +20,8 @@ const ManageProductDetail = () => {
     image: null,
   });
   const [showModal, setShowModal] = useState(false);
+  const [isUpdate, setIsUpdate] = useState(false); // Track if it's an update
+  const [selectedDetail, setSelectedDetail] = useState(null); // For holding selected detail
   const token = localStorage.getItem("token");
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -30,6 +33,7 @@ const ManageProductDetail = () => {
     const loadProductDetails = async () => {
       const details = await fetchProductDetails(productId, token);
       setProductDetails(details);
+      console.log(details);
     };
     loadProductDetails();
   }, [productId, token]);
@@ -37,8 +41,6 @@ const ManageProductDetail = () => {
   // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    // Convert size and quantity to number when they change
     if (name === "size" || name === "quantity") {
       setNewDetail((prevDetail) => ({
         ...prevDetail,
@@ -60,11 +62,9 @@ const ManageProductDetail = () => {
     }));
   };
 
-  // Handle form submit
+  // Handle form submit (for add/update)
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Ensure all fields are valid (check that none are undefined or empty)
     if (
       !newDetail.size ||
       !newDetail.color ||
@@ -75,36 +75,60 @@ const ManageProductDetail = () => {
       return;
     }
 
-    // Ensure size and quantity are valid numbers
-    if (isNaN(newDetail.size) || isNaN(newDetail.quantity)) {
-      toast.error("Kích thước và số lượng phải là số hợp lệ!");
-      return;
-    }
-
-    // Prepare FormData to send to backend
     const formData = new FormData();
     formData.append("p_id", productId);
     formData.append("size", newDetail.size);
     formData.append("color", newDetail.color);
     formData.append("quantity", newDetail.quantity);
     formData.append("image", newDetail.image);
+    console.log(token);
 
-    // Call createProductDetail API
-    const createdDetail = await createProductDetail(formData, token);
-    if (createdDetail) {
-      const updatedDetails = await fetchProductDetails(productId, token);
-      setProductDetails(updatedDetails);
+    if (isUpdate) {
+      const formDataUpdate = new FormData();
+      formDataUpdate.append("pd_id", selectedDetail.pd_Id);
+      formDataUpdate.append("p_id", productId);
+      formDataUpdate.append("size", newDetail.size);
+      formDataUpdate.append("code", selectedDetail.code);
+      formDataUpdate.append("color", newDetail.color);
+      formDataUpdate.append("quantity", newDetail.quantity);
+      formDataUpdate.append("image", newDetail.image);
+      console.log(selectedDetail);
+      console.log(newDetail);
+      // Update existing product detail
+      const updated = await updateProductDetail(formDataUpdate, token);
+      if (updated) {
+        toast.success("Cập nhật chi tiết sản phẩm thành công!");
+      }
+    } else {
+      // Create new product detail
+      const createdDetail = await createProductDetail(formData, token);
+      if (createdDetail) {
+        toast.success("Thêm chi tiết sản phẩm thành công!");
+      }
     }
 
+    // Reload product details
+    const updatedDetails = await fetchProductDetails(productId, token);
+    setProductDetails(updatedDetails);
+
+    // Reset form and state
+    setNewDetail({ size: "", color: "", quantity: "", image: null });
+    setShowModal(false);
+    setIsUpdate(false);
+    setSelectedDetail(null);
+  };
+
+  // Handle update button click
+  const handleUpdateClick = (detail) => {
+    setSelectedDetail(detail);
     setNewDetail({
-      size: "",
-      color: "",
-      quantity: "",
+      size: detail.size,
+      color: detail.color,
+      quantity: detail.quantity,
       image: null,
     });
-
-    toast.success("Thêm chi tiết sản phẩm thành công!");
-    setShowModal(false);
+    setShowModal(true);
+    setIsUpdate(true);
   };
 
   const filteredProductDetail = productDetails.filter((member) =>
@@ -124,7 +148,6 @@ const ManageProductDetail = () => {
         <div className="col-2">
           <SidebarManager />
         </div>
-
         <div className="col-10">
           <div className="container">
             <h2>Chi tiết sản phẩm</h2>
@@ -156,6 +179,7 @@ const ManageProductDetail = () => {
                     <th>Ngày cập nhật</th>
                     <th>Người cập nhật</th>
                     <th>Hình ảnh</th>
+                    <th>Hành động</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -182,11 +206,19 @@ const ManageProductDetail = () => {
                             <p>Không có hình ảnh!</p>
                           )}
                         </td>
+                        <td>
+                          <Button
+                            variant="warning"
+                            onClick={() => handleUpdateClick(detail)}
+                          >
+                            Cập nhật
+                          </Button>
+                        </td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="10">Sản phẩm không có chi tiết...</td>
+                      <td colSpan="11">Sản phẩm không có chi tiết...</td>
                     </tr>
                   )}
                 </tbody>
@@ -216,7 +248,9 @@ const ManageProductDetail = () => {
 
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
-          <Modal.Title>Thêm chi tiết sản phẩm</Modal.Title>
+          <Modal.Title>
+            {isUpdate ? "Cập nhật chi tiết sản phẩm" : "Thêm chi tiết sản phẩm"}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <form onSubmit={handleSubmit} encType="multipart/form-data">
@@ -259,17 +293,16 @@ const ManageProductDetail = () => {
                 type="file"
                 name="image"
                 onChange={handleImageChange}
-                className="form-control"
-                required
+                className="form-control-file"
+                required={!isUpdate} // Required only when adding
               />
             </div>
-            <Button type="submit" variant="primary" className="mt-3">
-              Thêm chi tiết sản phẩm
+            <Button type="submit" variant="primary">
+              {isUpdate ? "Cập nhật" : "Thêm"}
             </Button>
           </form>
         </Modal.Body>
       </Modal>
-
       <ToastContainer />
     </>
   );

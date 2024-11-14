@@ -1,0 +1,48 @@
+.product-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  background-color: #fff;
+  text-align: center;
+  transition: transform 0.2s;
+}
+
+.product-card:hover {
+  transform: scale(1.05);
+}
+
+.product-image {
+  width: 200px; /* Đặt chiều rộng cố định */
+  height: 200px; /* Đặt chiều cao cố định */
+  object-fit: cover; /* Đảm bảo hình ảnh vừa khớp với kích thước mà không bị méo */
+  border-radius: 8px;
+}
+
+.product-info {
+  margin-top: 15px;
+}
+
+.product-name {
+  font-size: 1.2em;
+  color: #333;
+  font-weight: bold;
+}
+
+.product-description {
+  color: #777;
+  font-size: 0.9em;
+  margin: 5px 0;
+}
+
+.product-price {
+  color: #007bff;
+  font-size: 1.1em;
+  font-weight: bold;
+}
+.site-footer {
+  color: white;
+  padding: 15px 0;
+  text-align: center;
+  margin-top: 30px;
+}
