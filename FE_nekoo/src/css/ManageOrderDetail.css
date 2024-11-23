@@ -1,0 +1,139 @@
+.order-detail {
+  max-width: 1000px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Bên trái: Thông tin đơn hàng và sản phẩm */
+.order-detail-left {
+  width: 60%;
+}
+
+.order-detail h2 {
+  color: #007bff;
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.order-detail h3 {
+  color: #333;
+  font-size: 20px;
+  margin-top: 30px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+}
+
+.order-detail p {
+  margin: 8px 0;
+  line-height: 1.6;
+}
+
+.order-detail strong {
+  color: #333;
+}
+
+.product-detail {
+  padding: 15px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #eef5ff;
+}
+
+.product-detail p {
+  margin: 5px 0;
+}
+
+.product-detail strong {
+  color: #007bff;
+}
+
+/* Bên phải: Voucher và Thanh toán */
+.order-detail-right {
+  width: 35%;
+}
+
+.voucher-detail,
+.payment-detail {
+  padding: 15px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #fff;
+}
+
+.voucher-detail {
+  background-color: #f5ffe9;
+}
+
+.payment-detail {
+  background-color: #fff7e9;
+}
+
+.voucher-detail p,
+.payment-detail p {
+  margin: 5px 0;
+}
+
+.voucher-detail strong,
+.payment-detail strong {
+  color: #007bff;
+}
+
+/* Bên phải: Voucher và Thanh toán */
+.order-detail-right {
+  width: 35%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Nút huỷ đơn hàng căn ở dưới cùng bên phải */
+.order-detail-right button {
+  align-self: flex-end;
+  background-color: red;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: auto; /* Đẩy nút xuống dưới cùng */
+}
+
+.order-detail-right button:hover {
+  background-color: darkred;
+}
+
+/* Text alignment for smaller screens */
+@media (max-width: 768px) {
+  .order-detail {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .order-detail-left,
+  .order-detail-right {
+    width: 100%;
+  }
+
+  .order-detail h2 {
+    font-size: 20px;
+    text-align: center;
+  }
+
+  .order-detail h3 {
+    font-size: 18px;
+  }
+  
+  .product-detail, 
+  .voucher-detail, 
+  .payment-detail {
+    padding: 10px;
+  }
+}

@@ -15,7 +15,8 @@ export const fetchVouchers = async () => {
       },
     });
     if (response.data.code === 200) {
-      return response.data.values.content;
+      console.log(response.data.values);
+      return response.data.values;
     } else {
       console.error("Error fetching vouchers:", response.data.message);
       return [];
@@ -25,14 +26,19 @@ export const fetchVouchers = async () => {
     return [];
   }
 };
-export const fetchVouchersEnable = async () => {
+export const fetchVouchersEnable = async (productId) => {
   try {
     const token = localStorage.getItem("token");
-    const response = await axios.get(GET_ALL_VOUCHERS_ENABLE_URL, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axios.get(
+      `${GET_ALL_VOUCHERS_ENABLE_URL}${
+        productId ? `?productId=${productId}` : ""
+      }`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     if (response.data.code === 200) {
       return response.data.values.content;
     } else {

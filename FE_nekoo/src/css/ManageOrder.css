@@ -1,36 +1,76 @@
 /* Container chính cho phần quản lý đơn hàng */
-.order-management {
+.order-management, .pagination-wrapper {
   font-family: Arial, sans-serif;
   margin: 20px;
 }
 
-.order-management h2 {
+h2, .order-management h2 {
   color: #333;
   margin-bottom: 20px;
 }
 
 /* Nhãn lọc trạng thái */
-.order-management label {
+label {
   font-weight: bold;
   margin-right: 10px;
+  display: inline-block;
 }
 
-.order-management select {
+select {
   padding: 5px;
   margin-left: 10px;
   border-radius: 5px;
   border: 1px solid #ccc;
 }
 
+/* Đặt phần chọn trạng thái và tìm kiếm trên cùng một dòng */
+.filter-wrapper {
+  display: flex;
+  justify-content: flex-start; /* Căn về sát bên trái */
+  align-items: center; /* Căn giữa theo chiều dọc */
+  margin-bottom: 20px;
+}
+
+.filter-wrapper label {
+  margin-right: 20px; /* Khoảng cách giữa status và tìm kiếm */
+}
+
+/* Căn chỉnh phần tìm kiếm thẳng hàng với phần chọn trạng thái */
+.order-search {
+  display: flex;
+  align-items: center;
+}
+
+.order-search input {
+  padding: 8px;
+  width: 250px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.order-search button {
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.order-search button:hover {
+  background-color: #0056b3;
+}
+
 /* Danh sách đơn hàng */
-.order-management .order-list {
+.order-list {
   margin-top: 20px;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 20px;
 }
 
-.order-management .order-card {
+.order-card {
   border: 1px solid #ddd;
   padding: 20px;
   border-radius: 10px;
@@ -38,39 +78,66 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.order-management .order-card h3 {
+/* Khi chỉ có 1 đơn hàng, chiều rộng sẽ bằng với khi có 2 đơn hàng */
+.order-list.single-order {
+  grid-template-columns: repeat(2, minmax(300px, 1fr));
+}
+
+/* Phong cách chung cho thẻ đơn hàng */
+.order-card h3 {
   margin-bottom: 10px;
   font-size: 18px;
 }
 
-.order-management .order-card p {
+.order-card p {
   margin: 5px 0;
 }
 
-.order-management .order-card label {
+.order-card label {
   display: inline-block;
   margin-top: 10px;
   font-weight: bold;
 }
 
-.order-management .order-card select {
+.order-card select {
   margin-left: 5px;
   padding: 5px;
   border-radius: 5px;
   border: 1px solid #ccc;
 }
 
+/* Nút "Chi tiết" nhỏ hơn và căn về góc phải */
+.detail-button {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  float: right;
+  margin-top: 10px;
+}
+
+.detail-button:hover {
+  background-color: #0056b3;
+}
+
+.detail-button:active {
+  transform: scale(0.98);
+}
+
 /* Phân trang */
-.order-management .pagination-wrapper {
+.pagination-wrapper {
   margin-top: 30px;
   text-align: center;
 }
 
-.order-management .pagination {
+.pagination {
   display: inline-block;
 }
 
-.order-management .pagination button {
+.pagination button {
   padding: 10px 20px;
   margin: 0 5px;
   border: 1px solid #ccc;
@@ -80,25 +147,60 @@
   transition: background-color 0.3s;
 }
 
-.order-management .pagination button:disabled {
+.pagination button:disabled {
   background-color: #f0f0f0;
   cursor: not-allowed;
 }
 
-.order-management .pagination button:hover:not(:disabled) {
+.pagination button:hover:not(:disabled) {
   background-color: #007bff;
   color: #fff;
 }
 
-.order-management .pagination span {
+.pagination span {
   margin: 0 10px;
   font-weight: bold;
 }
 
 /* Toast container */
-.order-management .ToastContainer {
+.ToastContainer {
   position: fixed;
   bottom: 20px;
   right: 20px;
   z-index: 9999;
+}
+
+/* Đặt phần chọn trạng thái và tìm kiếm trên cùng một dòng */
+.filter-wrapper {
+  display: flex;
+  justify-content: space-between; /* Đẩy phần search sang phải và status sang trái */
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* Phần search */
+.order-search {
+  display: flex;
+  align-items: center;
+}
+
+.order-search input {
+  padding: 8px;
+  width: 250px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.order-search button {
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.order-search button:hover {
+  background-color: #0056b3;
 }

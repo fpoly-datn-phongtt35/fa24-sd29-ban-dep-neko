@@ -26,7 +26,6 @@ const ManageProduct = () => {
   const [newProduct, setNewProduct] = useState({
     name: "",
     material: "",
-    vat: "",
     price: "",
     category: { c_Id: "" },
   });
@@ -40,7 +39,6 @@ const ManageProduct = () => {
     p_id: "",
     name: "",
     material: "",
-    vat: "",
     price: "",
   });
   const [updateDiscount, setUpdateDiscount] = useState({
@@ -61,7 +59,7 @@ const ManageProduct = () => {
     try {
       const productsData = await loadProducts(token);
       const categoriesData = await loadCategoriesAvailable(token);
-      const voucherData = await fetchVouchersEnable(token);
+      const voucherData = await fetchVouchersEnable(null);
       setVouchers(voucherData);
       setProducts(productsData);
       setCategories(categoriesData);
@@ -105,9 +103,69 @@ const ManageProduct = () => {
     ]);
   };
 
+  const handleCloseAddForm = () => {
+    setShowAddForm(false);
+    setNewProduct({
+      name: "",
+      material: "",
+      price: "",
+      category: { c_Id: "" },
+    });
+    setProductDetails([{ size: "", color: "", quantity: "", image: null }]);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      if (
+        !newProduct.name ||
+        !newProduct.material ||
+        !newProduct.price ||
+        !newProduct.category.c_Id
+      ) {
+        toast.error("Vui lòng điền đầy đủ thông tin sản phẩm chính.");
+        return;
+      }
+
+      // Kiểm tra các trường của chi tiết sản phẩm
+      for (let i = 0; i < productDetails.length; i++) {
+        const detail = productDetails[i];
+        if (
+          !detail.size ||
+          !detail.color ||
+          !detail.quantity ||
+          !detail.image
+        ) {
+          toast.error(
+            `Vui lòng điền đầy đủ thông tin cho chi tiết sản phẩm ${i + 1}.`
+          );
+          return;
+        }
+      }
+
+      // Kiểm tra các trường số hợp lệ
+      const numberRegex = /^[0-9]+$/;
+      if (
+        !numberRegex.test(newProduct.price) ||
+        Number(newProduct.price) <= 0
+      ) {
+        toast.error("Giá phải là một số hợp lệ.");
+        return;
+      }
+
+      for (let i = 0; i < productDetails.length; i++) {
+        const detail = productDetails[i];
+        if (
+          !numberRegex.test(detail.quantity) ||
+          Number(newProduct.quantity) <= 0
+        ) {
+          toast.error(
+            `Số lượng tại chi tiết sản phẩm ${i + 1} phải là một số hợp lệ.`
+          );
+          return;
+        }
+      }
+
       await addProduct(newProduct, productDetails, token); // Gọi hàm dịch vụ để thêm sản phẩm
       toast.success("Thêm sản phẩm thành công!");
 
@@ -115,7 +173,6 @@ const ManageProduct = () => {
       setNewProduct({
         name: "",
         material: "",
-        vat: "",
         price: "",
         category: { c_Id: "" },
       });
@@ -130,13 +187,10 @@ const ManageProduct = () => {
   };
   //update
   const handleUpdateClick = (product) => {
-    console.log(product);
-
     setSelectedProduct({
       p_id: product.p_id,
       name: product.name,
       material: product.material,
-      vat: product.vat,
       price: product.price,
       status: product.status,
       category: { c_Id: product.category.c_Id },
@@ -163,6 +217,11 @@ const ManageProduct = () => {
 
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
+
+    if (Number(selectedProduct.price) < 0) {
+      toast.error("Giá không được nhỏ hơn 0.");
+      return;
+    }
     try {
       await updateProduct(selectedProduct, token);
       toast.success("Cập nhật sản phẩm thành công!");
@@ -227,6 +286,14 @@ const ManageProduct = () => {
   const currentItems = filteredProduct.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredProduct.length / itemsPerPage);
 
+  // Chuyển số thành tiền
+  const formatCurrency = (number) => {
+    return number
+      .toLocaleString("vi-VN", { style: "currency", currency: "VND" })
+      .replace("₫", "")
+      .trim();
+  };
+
   return (
     <>
       <div className="row">
@@ -260,7 +327,6 @@ const ManageProduct = () => {
                     <th>ID</th>
                     <th>Tên sản phẩm</th>
                     <th>Chất liệu</th>
-                    <th>Thuế VAT</th>
                     <th>Giá</th>
                     <th>Trạng thái</th>
                     <th>Thao tác</th>
@@ -280,10 +346,9 @@ const ManageProduct = () => {
                           </span>
                         </td>
                         <td>{product.material}</td>
-                        <td>{product.vat}</td>
                         <td>
                           {product.price
-                            ? product.price
+                            ? formatCurrency(product.price) + " VND"
                             : "Không có giá để hiển thị"}
                         </td>
                         <td>
@@ -347,8 +412,8 @@ const ManageProduct = () => {
             </div>
 
             {/* Modal for adding product */}
-            <Modal show={showAddForm} onHide={() => setShowAddForm(false)}>
-              <Modal.Header closeButton>
+            <Modal show={showAddForm} onHide={handleCloseAddForm}>
+              <Modal.Header>
                 <Modal.Title>Thêm mới sản phẩm</Modal.Title>
               </Modal.Header>
               <Modal.Body>
@@ -361,7 +426,6 @@ const ManageProduct = () => {
                       value={newProduct.name}
                       onChange={handleInputChange}
                       className="form-control"
-                      required
                     />
                   </label>
                   <label>
@@ -372,18 +436,6 @@ const ManageProduct = () => {
                       value={newProduct.material}
                       onChange={handleInputChange}
                       className="form-control"
-                      required
-                    />
-                  </label>
-                  <label>
-                    Thuế VAT:
-                    <input
-                      type="number"
-                      name="vat"
-                      value={newProduct.vat}
-                      onChange={handleInputChange}
-                      className="form-control"
-                      required
                     />
                   </label>
                   <label>
@@ -394,12 +446,11 @@ const ManageProduct = () => {
                       value={newProduct.price}
                       onChange={handleInputChange}
                       className="form-control"
-                      required
                     />
                   </label>
                   <label>
-                    Category ID:
-                    <select>
+                    Loại sản phẩm:
+                    <select name="c_Id" onChange={(e) => handleInputChange(e)}>
                       <option value="">Chọn danh mục</option>
                       {categories.map((category) => (
                         <option key={category.c_Id} value={category.c_Id}>
@@ -482,7 +533,7 @@ const ManageProduct = () => {
               show={showUpdateForm}
               onHide={() => setShowUpdateForm(false)}
             >
-              <Modal.Header closeButton>
+              <Modal.Header>
                 <Modal.Title>Cập nhật sản phẩm</Modal.Title>
               </Modal.Header>
               <Modal.Body>
@@ -510,17 +561,6 @@ const ManageProduct = () => {
                     />
                   </label>
                   <label>
-                    Thuế VAT:
-                    <input
-                      type="number"
-                      name="vat"
-                      value={selectedProduct.vat}
-                      onChange={handleUpdateInputChange}
-                      className="form-control"
-                      required
-                    />
-                  </label>
-                  <label>
                     Giá:
                     <input
                       type="number"
@@ -541,7 +581,7 @@ const ManageProduct = () => {
               show={showUpdateVoucherForm}
               onHide={() => setShowUpdateVoucherForm(false)}
             >
-              <Modal.Header closeButton>
+              <Modal.Header>
                 <Modal.Title>Cập nhật mã giảm giá sản phẩm</Modal.Title>
               </Modal.Header>
               <Modal.Body>
@@ -549,7 +589,7 @@ const ManageProduct = () => {
                   <label>
                     Mã giảm giá:
                     <select
-                      style={{ margin: "0 67px 0 0" }}
+                      style={{ margin: "0 200px 0 0" }}
                       name="voucherId"
                       value={updateDiscount.voucherId}
                       onChange={(e) =>
@@ -572,6 +612,7 @@ const ManageProduct = () => {
                   <label>
                     Số lượng:
                     <input
+                      style={{ margin: "0 135px 0 0" }}
                       type="number"
                       name="quantity"
                       value={updateDiscount.quantity}
@@ -589,7 +630,7 @@ const ManageProduct = () => {
                     <label>
                       Ngày bắt đầu:
                       <input
-                        style={{ margin: "0 110px 0 0" }}
+                        style={{ margin: "0 60px 0 0" }}
                         type="date"
                         name="startDate"
                         value={updateDiscount.startDate}
@@ -606,7 +647,7 @@ const ManageProduct = () => {
                     <label>
                       Ngày kết thúc:
                       <input
-                        style={{ margin: "0 110px 0 0" }}
+                        style={{ margin: "0 60px 0 0" }}
                         type="date"
                         name="endDate"
                         value={updateDiscount.endDate}

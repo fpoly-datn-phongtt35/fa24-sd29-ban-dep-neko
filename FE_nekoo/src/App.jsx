@@ -22,8 +22,10 @@ import Customer from "./components/Customer/ManageCustomer";
 
 import ManageStaff from "./components/Manager/ManageStaff";
 
-import ManageOrder from "./components/Manager/ManageOrder";
 
+import ManageOrder from "./components/Manager/ManageOrder"
+import ManageOrderDetail from "./components/Manager/ManageOrderDetail"
+import Order from "./components/pages/Order"
 import Unauthorized from "./components/Auth/unauthorized/index";
 
 import Shop from "./components/pages/shop";
@@ -58,11 +60,16 @@ const App = () => {
         />
         {/* Order */}
         <Route path="/manageOrder" element={<ManageOrder />} />
+        {/* OrderDetail */}
+        <Route path="/manageOrderDetail/:code" element={<ManageOrderDetail />} />
+
         {/* shop-screen */}
         <Route path="/shop" element={<Shop />} />
         {/* shop-screen */}
         <Route path="/detail/:productId" element={<Detail />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/order" element={<Order />} />
+        <Route path="/order/:code" element={<ManageOrderDetail />} />
         {/* customer-screen */}
         <Route path="/customer" element={<Customer />} />
         {/* Không xác định */}

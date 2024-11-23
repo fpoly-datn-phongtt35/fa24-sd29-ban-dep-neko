@@ -9,16 +9,21 @@ export const loadShop = async (
   size,
   keySort,
   orderBy,
-  searchName
+  searchName,
+  c_id,
+  minPrice,
+  maxPrice
 ) => {
   const response = await axios.get(
-    `${API_BASE_URL}/product/getAll?keySort=${keySort}&orderBy=${orderBy}&page=${page}&size=${size}&name=${searchName}`,
+    `${API_BASE_URL}/product/getAll?keySort=${keySort}&orderBy=${orderBy}&page=${page}&size=${size}&name=${searchName}&c_id=${c_id}&minPrice=${minPrice}&maxPrice=${maxPrice}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     }
   );
+  console.log(`${API_BASE_URL}/product/getAll?keySort=${keySort}&orderBy=${orderBy}&page=${page}&size=${size}&name=${searchName}&c_id=${c_id}&minPrice=${minPrice}&maxPrice=${maxPrice}`);
+  
   if (!response.status) {
     throw new Error("Failed to fetch products: " + response.statusText);
   }
@@ -113,14 +118,11 @@ export const updateCart = async (token, dataCart) => {
 };
 
 export const deleteCart = async (token, pd_id) => {
-  const response = await axios.delete(
-    `${API_BASE_URL}/cart/delete?pd_id=${pd_id}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const response = await axios.delete(`${API_BASE_URL}/cart/delete?pd_id=${pd_id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   if (!response.status) {
     throw new Error("Failed to fetch cart: " + response.statusText);
   }
@@ -138,7 +140,7 @@ export const deleteCart = async (token, pd_id) => {
 // Order START
 // nhận obj OrderRequest
 export const createOrder = async (token, orderData) => {
-  const response = await axios.post(`${API_BASE_URL}/order`, orderData, {
+  const response = await axios.post(`${API_BASE_URL}/order/create`, orderData, {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,

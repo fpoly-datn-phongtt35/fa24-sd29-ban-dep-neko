@@ -18,7 +18,7 @@ const Sidebar = () => {
           <Link to="/manageCustomer">Quản lý Khách hàng</Link>
         </li>
         <li>
-          <Link to="/manageBill">Quản lý Hoá đơn</Link>
+          <Link to="/manageOrder">Quản lý Đơn Hàng</Link>
         </li>
       </ul>
       <button onClick={handleLogout} className="logout-button">

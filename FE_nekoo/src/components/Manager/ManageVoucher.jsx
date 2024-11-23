@@ -43,7 +43,7 @@ const ManageVoucher = () => {
       console.error("Không thể load mã giảm giá:", error);
       toast.error("Không thể load danh sách mã giảm giá !");
     } finally {
-      clearTimeout(loadingTimeout); 
+      clearTimeout(loadingTimeout);
       setLoading(false);
     }
   };
@@ -56,6 +56,10 @@ const ManageVoucher = () => {
 
   const handleAddVoucher = async () => {
     if (newVoucherDiscount) {
+      if (newVoucherDiscount <= 0) {
+        toast.error("Giá tiền giảm phải lớn hơn 0 !!!");
+        return;
+      }
       try {
         await addVoucher({ discount: newVoucherDiscount, status: 1 });
         toast.success("Thêm mới mã giảm giá thành công!");
@@ -66,7 +70,7 @@ const ManageVoucher = () => {
         toast.error("Thêm mới mã thất bại!");
       }
     } else {
-      toast.warning("Vui lòng nhập số tiền hợp lệ.");
+      toast.error("Vui lòng nhập số tiền hợp lệ.");
     }
   };
 
@@ -79,6 +83,10 @@ const ManageVoucher = () => {
 
   const handleUpdateVoucher = async () => {
     if (selectedVoucher && newDiscount) {
+      if (newDiscount <= 0) {
+        toast.error("Giá tiền giảm phải lớn hơn 0 !!!");
+        return;
+      }
       try {
         await updateVoucher(selectedVoucher.v_id, parseFloat(newDiscount));
         toast.success("Cập nhật mã giảm giá thành công!");
@@ -89,7 +97,7 @@ const ManageVoucher = () => {
         toast.error("Cập nhật mã giảm giá thất bại!");
       }
     } else {
-      toast.warning("Vui lòng nhập số tiền hợp lệ.");
+      toast.error("Vui lòng nhập số tiền hợp lệ.");
     }
   };
 
@@ -124,6 +132,14 @@ const ManageVoucher = () => {
     indexOfLastItem
   );
   const totalPages = Math.ceil(filteredVouchers.length / itemsPerPage);
+
+  // Chuyển số thành tiền
+  const formatCurrency = (number) => {
+    return number
+      .toLocaleString("vi-VN", { style: "currency", currency: "VND" })
+      .replace("₫", "")
+      .trim();
+  };
 
   return (
     <>
@@ -169,7 +185,7 @@ const ManageVoucher = () => {
                       <tr key={voucher.v_id}>
                         <td>{voucher.v_id}</td>
                         <td>{voucher.code}</td>
-                        <td>{voucher.discount.toLocaleString()} đ</td>
+                        <td>{formatCurrency(voucher.discount)} VND</td>
                         <td>{new Date(voucher.createAt).toLocaleString()}</td>
                         <td>{voucher.createBy}</td>
                         <td>{new Date(voucher.updateAt).toLocaleString()}</td>
@@ -236,7 +252,7 @@ const ManageVoucher = () => {
 
             {/* Add Voucher Modal */}
             <Modal show={showAddForm} onHide={() => setShowAddForm(false)}>
-              <Modal.Header closeButton>
+              <Modal.Header>
                 <Modal.Title>Thêm mã giảm giá</Modal.Title>
               </Modal.Header>
               <Modal.Body>
@@ -260,7 +276,7 @@ const ManageVoucher = () => {
               show={showUpdateForm}
               onHide={() => setShowUpdateForm(false)}
             >
-              <Modal.Header closeButton>
+              <Modal.Header>
                 <Modal.Title>Cập nhật mã giảm giá</Modal.Title>
               </Modal.Header>
               <Modal.Body>

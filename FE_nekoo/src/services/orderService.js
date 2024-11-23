@@ -6,8 +6,8 @@ const GET_CODE_ORDER_URL = `${API_BASE_URL}/order/get`;
 const CREATE_ORDER_URL = `${API_BASE_URL}/order/create`;
 const CHANGESTATUS_ORDER_URL = `${API_BASE_URL}/order/changeStatus`;
 
-export const loadOrders = async (page, status, token) => {
-    const response = await axios.get(`${GET_ALL_ORDERS_URL}?${status? `status=${status}` : ""}&page=${page}`, {
+export const loadOrders = async (userId, code, page, status, token) => {
+    const response = await axios.get(`${GET_ALL_ORDERS_URL}?${userId? `userId=${userId}` : ""}&${code? `code=${code}` : ""}&${status? `status=${status}` : ""}&page=${page}`, {
       headers: {
         Authorization: `Bearer ${token}`, // Include the token in the request
       },
@@ -33,7 +33,7 @@ export const loadOrders = async (page, status, token) => {
       },
     });
   
-    if (!response.ok) {
+    if (!response.status) {
       throw new Error("Failed to fetch order: " + response.statusText);
     }
   
@@ -43,14 +43,13 @@ export const loadOrders = async (page, status, token) => {
   };
 
   export const changeStatus = async (id, status, toStatus, token) => {
-    const response = await axios.put(`${CHANGESTATUS_ORDER_URL}?id=${id}&status=${status}&toStatus=${toStatus}`, {
+    const response = await axios.put(`${CHANGESTATUS_ORDER_URL}?id=${id}&status=${status}&toStatus=${toStatus}`, {},{
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`, // Include the token in the request
       },
     });
   
-    if (!response.ok) {
+    if (!response.status) {
       throw new Error("Failed to change status");
     }
   

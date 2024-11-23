@@ -26,12 +26,9 @@ const Sidebar = () => {
         <li>
           <Link to="/manageCategory">Quản lý loại sản phẩm</Link>
         </li>
-        <li>
+        {/* <li>
           <Link to="/manageTransportation">Quản lý vận chuyển</Link>
-        </li>
-        <li>
-          <Link to="/manageOrder">Quản lý Đơn Hàng</Link>
-        </li>
+        </li> */}
       </ul>
       <button onClick={handleLogout} className="logout-button">
         Đăng xuất

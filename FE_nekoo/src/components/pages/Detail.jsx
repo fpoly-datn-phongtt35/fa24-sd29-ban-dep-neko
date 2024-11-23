@@ -9,9 +9,10 @@ import "../../css/bootstrap/owl.carousel.min.css";
 import "../../css/bootstrap/owl.theme.default.min.css";
 import "../../css/bootstrap/aos.css";
 import "../../css/shop/style.css";
+import { toast, ToastContainer } from "react-toastify";
 import { FaUser } from "react-icons/fa";
 import { HiShoppingCart } from "react-icons/hi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import "../../css/Detail.css";
 
@@ -22,6 +23,7 @@ const Detail = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(6);
   const token = localStorage.getItem("token");
+  const navigate = useNavigate();
   useEffect(() => {
     const loadProductDetails = async () => {
       if (token) {
@@ -37,7 +39,6 @@ const Detail = () => {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = productDetails.slice(indexOfFirstItem, indexOfLastItem);
-
   const addToCart = async (product) => {
     try {
       const token = localStorage.getItem("token"); // Get the token from localStorage
@@ -60,6 +61,7 @@ const Detail = () => {
         localStorage.setItem("cart", JSON.stringify(newCart));
         return newCart;
       });
+      toast.success("Thêm vào giỏ hàng thành công");
     } catch (error) {
       console.error("Failed to add product to cart:", error);
       // Handle the error, maybe show a user notification
@@ -71,9 +73,14 @@ const Detail = () => {
     setCurrentPage(pageNumber);
   };
 
+  const handleLogout = () => {
+    // Xóa token khỏi localStorage và điều hướng đến trang đăng nhập
+    localStorage.clear();
+    navigate("/login"); // Thay đổi đường dẫn đến trang đăng nhập
+  };
+
   // Calculate total pages
   const totalPages = Math.ceil(productDetails.length / itemsPerPage);
-  console.log(localStorage.getItem(cart));
 
   return (
     <>
@@ -106,13 +113,19 @@ const Detail = () => {
                         </Link>
                       </li>
                       <li>
-                        <Link to={"/login"} className="site-cart">
-                          {token ? (
+                        {token ? (
+                          <Link
+                            to={"/login"}
+                            className="site-cart"
+                            onClick={handleLogout}
+                          >
                             <span>Đăng xuất</span>
-                          ) : (
+                          </Link>
+                        ) : (
+                          <Link to={"/login"} className="site-cart">
                             <span>Đăng nhập</span>
-                          )}
-                        </Link>
+                          </Link>
+                        )}
                       </li>
                     </ul>
                   </div>
@@ -132,6 +145,9 @@ const Detail = () => {
                 <li>
                   <Link to="/cart">GIỎ HÀNG</Link>
                 </li>
+                <li>
+                  <Link to="/order">Đơn hàng</Link>
+                </li>
               </ul>
             </div>
           </nav>
@@ -142,7 +158,12 @@ const Detail = () => {
           <div className="row">
             {currentItems.length > 0 ? (
               currentItems.map((detail, index) => (
-                <div key={index} className="col-md-4 mb-4">
+                <div
+                  key={index}
+                  className={`col-md-4 mb-4 ${
+                    detail.quantity === 0 ? "out-of-stock-card" : ""
+                  }`}
+                >
                   <div className="product-card">
                     <img
                       src={`data:image/jpeg;base64,${
@@ -151,31 +172,39 @@ const Detail = () => {
                       alt={detail.code}
                       className="product-image"
                     />
-                    <div
-                      className="product-info"
-                      style={{ textAlign: "center" }}
-                    >
-                      <h3 className="product-name">{detail.color}</h3>
-                      <p className="product-description">
-                        Mã Sản phẩm {detail.code}
+                    <div className="product-info">
+                      <h3 className="product-color">Màu sắc: {detail.color}</h3>
+                      <p className="product-size">Kích cỡ: {detail.size}</p>
+                      <p className="product-code">Mã sản phẩm: {detail.code}</p>
+                      <p className="product-quantity">
+                        Số lượng còn lại:{" "}
+                        {detail.quantity > 0 ? detail.quantity : "Hết hàng"}
                       </p>
-                      <p className="product-price">Còn lại {detail.quantity}</p>
-                      <button
-                        className="btn btn-primary"
-                        onClick={() => addToCart(detail)}
-                      >
-                        Thêm vào giỏ hàng
-                      </button>
+                      {detail.quantity > 0 ? (
+                        <button
+                          className="btn btn-primary"
+                          onClick={() => addToCart(detail)}
+                        >
+                          Thêm vào giỏ hàng
+                        </button>
+                      ) : (
+                        <button
+                          className="btn btn-primary out-of-stock"
+                          disabled
+                        >
+                          Hết hàng
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
               ))
             ) : (
-              <p>No product details available.</p>
+              <p>Không có chi tiết sản phẩm nào.</p>
             )}
           </div>
 
-          {/* Pagination buttons */}
+          {/* Nút phân trang */}
           <div className="pagination">
             <button
               disabled={currentPage === 1}
@@ -232,6 +261,7 @@ const Detail = () => {
           </div>
         </footer>
       </div>
+      <ToastContainer />
     </>
   );
 };

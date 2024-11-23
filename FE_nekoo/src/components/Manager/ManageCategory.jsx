@@ -68,7 +68,7 @@ const ManageCategory = () => {
         toast.error("Thêm mới danh mục thất bại!");
       }
     } else {
-      toast.warning("Vui lòng nhập tên danh mục.");
+      toast.error("Vui lòng nhập tên danh mục.");
     }
   };
 
@@ -95,7 +95,7 @@ const ManageCategory = () => {
         toast.error("Cập nhật danh mục thất bại!");
       }
     } else {
-      toast.warning("Vui lòng nhập tên danh mục.");
+      toast.error("Vui lòng nhập tên danh mục.");
     }
   };
 
@@ -138,7 +138,7 @@ const ManageCategory = () => {
             <h2>Quản lý danh mục</h2>
             <div className="top-controls">
               <Button variant="primary" onClick={toggleAddForm}>
-                Thêm mới danh mục
+                Thêm danh mục
               </Button>
               <input
                 type="text"
@@ -228,7 +228,7 @@ const ManageCategory = () => {
 
             {/* Add Category Modal */}
             <Modal show={showAddForm} onHide={() => setShowAddForm(false)}>
-              <Modal.Header closeButton>
+              <Modal.Header>
                 <Modal.Title>Thêm danh mục</Modal.Title>
               </Modal.Header>
               <Modal.Body>
@@ -242,7 +242,7 @@ const ManageCategory = () => {
                   required
                 />
                 <Button variant="primary" onClick={handleAddCategory}>
-                  Thêm mới danh mục
+                  Thêm danh mục
                 </Button>
               </Modal.Body>
             </Modal>
@@ -252,7 +252,7 @@ const ManageCategory = () => {
               show={showUpdateForm}
               onHide={() => setShowUpdateForm(false)}
             >
-              <Modal.Header closeButton>
+              <Modal.Header>
                 <Modal.Title>Cập nhật danh mục</Modal.Title>
               </Modal.Header>
               <Modal.Body>

@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 //service
 import { loadShop } from "../../services/userWebService";
+import { loadCategoriesAvailable } from "../../services/categoryService";
+import { Link, useNavigate } from "react-router-dom";
+
 //css
 import "../../css/shop/fontStyle.css";
 import "../../css/bootstrap/bootstrap.min.css";
@@ -10,10 +13,11 @@ import "../../css/bootstrap/owl.carousel.min.css";
 import "../../css/bootstrap/owl.theme.default.min.css";
 import "../../css/bootstrap/aos.css";
 import "../../css/shop/style.css";
+import "../../css/pageShop.css";
+
 //icon
 import { FaUser } from "react-icons/fa";
 import { HiShoppingCart } from "react-icons/hi";
-import { Link } from "react-router-dom";
 
 const Shop = () => {
   const [products, setProducts] = useState([]);
@@ -24,17 +28,40 @@ const Shop = () => {
   const [currentPage, setCurrentPage] = useState(0); // Trang hiện tại
   const [totalPages, setTotalPages] = useState(0); // Tổng số trang
   const token = localStorage.getItem("token");
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedPriceRange, setSelectedPriceRange] = useState("");
+  const [priceRange, setPriceRange] = useState({ minPrice: "", maxPrice: "" });
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetchProducts(currentPage, pageSize, sortKey, sortOrder, searchName);
-  }, [currentPage, sortKey, sortOrder]);
+    fetchProducts(
+      currentPage,
+      pageSize,
+      sortKey,
+      sortOrder,
+      searchName,
+      selectedCategory,
+      priceRange.minPrice,
+      priceRange.maxPrice
+    );
+    fectCategories();
+  }, [currentPage, sortKey, sortOrder, selectedCategory, priceRange]);
+
+  const fectCategories = async () => {
+    const categoriesData = await loadCategoriesAvailable(token);
+    setCategories(categoriesData);
+  };
 
   const fetchProducts = async (
     currentPage,
     pageSize,
     sortKey,
     sortOrder,
-    searchName
+    searchName,
+    c_id,
+    minPrice,
+    maxPrice
   ) => {
     const token = localStorage.getItem("token");
     try {
@@ -44,7 +71,10 @@ const Shop = () => {
         pageSize,
         sortKey,
         sortOrder,
-        searchName
+        searchName,
+        c_id,
+        minPrice,
+        maxPrice
       );
       setProducts(productList);
       setTotalPages(productList.page.totalPages); // Set tổng số trang
@@ -55,7 +85,16 @@ const Shop = () => {
   };
 
   useEffect(() => {
-    fetchProducts(0, pageSize, sortKey, sortOrder, searchName);
+    fetchProducts(
+      0,
+      pageSize,
+      sortKey,
+      sortOrder,
+      searchName,
+      selectedCategory,
+      priceRange.minPrice,
+      priceRange.maxPrice
+    );
     setCurrentPage(0);
   }, [searchName]);
 
@@ -83,6 +122,37 @@ const Shop = () => {
     const [field, order] = event.target.value.split(",");
     setSortKey(field);
     setSortOrder(order);
+  };
+  const handlePriceRangeChange = (e) => {
+    if (e == "0-100000") {
+      setPriceRange({ minPrice: 0, maxPrice: 100000 });
+    } else if (e == "100000-500000") {
+      setPriceRange({ minPrice: 100000, maxPrice: 500000 });
+    } else if (e == "500000-1000000") {
+      setPriceRange({ minPrice: 500000, maxPrice: 1000000 });
+    } else if (e == "1000000") {
+      setPriceRange({ minPrice: 1000000, maxPrice: "" });
+    } else {
+      setPriceRange({ minPrice: "", maxPrice: "" });
+    }
+    setSelectedPriceRange(e);
+  };
+
+  const handleCategoryChange = (category) => {
+    setSelectedCategory(category);
+  };
+
+  const formatCurrency = (number) => {
+    return number
+      .toLocaleString("vi-VN", { style: "currency", currency: "VND" })
+      .replace("₫", "")
+      .trim();
+  };
+
+  const handleLogout = () => {
+    // Xóa token khỏi localStorage và điều hướng đến trang đăng nhập
+    localStorage.clear();
+    navigate("/login"); // Thay đổi đường dẫn đến trang đăng nhập
   };
 
   return (
@@ -116,13 +186,19 @@ const Shop = () => {
                         </Link>
                       </li>
                       <li>
-                        <Link to={"/login"} className="site-cart">
-                          {token ? (
+                        {token ? (
+                          <Link
+                            to={"/login"}
+                            className="site-cart"
+                            onClick={handleLogout}
+                          >
                             <span>Đăng xuất</span>
-                          ) : (
+                          </Link>
+                        ) : (
+                          <Link to={"/login"} className="site-cart">
                             <span>Đăng nhập</span>
-                          )}
-                        </Link>
+                          </Link>
+                        )}
                       </li>
                     </ul>
                   </div>
@@ -142,6 +218,9 @@ const Shop = () => {
                 <li>
                   <Link to="/cart">GIỎ HÀNG</Link>
                 </li>
+                <li>
+                  <Link to="/order">Đơn hàng</Link>
+                </li>
               </ul>
             </div>
           </nav>
@@ -154,35 +233,68 @@ const Shop = () => {
           <div className="container">
             <div className="row mb-5">
               <div className="col-md-12 order-2">
-                <div className="row">
-                  <div className="col-md-12 mb-5">
-                    <div className="float-md-left mb-4">
-                      <h2 className="text-black h5">Tất Cả Sản Phẩm</h2>
-                    </div>
-                  </div>
-                </div>
-                {/* Tìm kiếm */}
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Tìm kiếm theo tên..."
-                    value={searchName}
-                    onChange={handleSearchChange}
-                  />
+                <div className="row mb-5">
+                  <h2 className="text-black h5">Tất Cả Sản Phẩm</h2>
                 </div>
 
-                {/* Sắp xếp */}
-                <div>
-                  <select
-                    value={`${sortKey},${sortOrder}`}
-                    onChange={handleSortChange}
-                  >
-                    <option value="name,asc">Theo tên ⬆︎</option>
-                    <option value="name,desc">Theo tên ⬇︎</option>
-                    <option value="price.price,asc">Theo giá ⬆︎</option>
-                    <option value="price.price,desc">Theo giá ⬇︎</option>
-                  </select>
+                {/* Bộ lọc và tìm kiếm */}
+                <div className="filter-search-wrapper">
+                  {/* Lọc */}
+                  <div className="filter-wrapper">
+                    {/* Sắp xếp theo tên hoặc giá */}
+                    <select
+                      value={`${sortKey},${sortOrder}`}
+                      onChange={handleSortChange}
+                    >
+                      <option value="name,asc">Theo tên ⬆︎</option>
+                      <option value="name,desc">Theo tên ⬇︎</option>
+                      <option value="price.price,asc">Theo giá ⬆︎</option>
+                      <option value="price.price,desc">Theo giá ⬇︎</option>
+                    </select>
+
+                    {/* Lọc theo category */}
+                    <select
+                      value={selectedCategory}
+                      onChange={(e) => handleCategoryChange(e.target.value)}
+                    >
+                      <option value="">Tất cả danh mục</option>
+                      {categories.map((category) => (
+                        <option key={category.c_Id} value={category.c_Id}>
+                          {category.name}
+                        </option>
+                      ))}
+                    </select>
+
+                    {/* Lọc theo khoảng giá */}
+                    <select
+                      style={{ minWidth: "250px" }}
+                      value={selectedPriceRange}
+                      onChange={(e) => handlePriceRangeChange(e.target.value)}
+                    >
+                      <option value="">Tất cả giá</option>
+                      <option value="0-100000">Dưới 100,000 VND</option>
+                      <option value="100000-500000">
+                        100,000 - 500,000 VND
+                      </option>
+                      <option value="500000-1000000">
+                        500,000 - 1,000,000 VND
+                      </option>
+                      <option value="1000000">Trên 1,000,000 VND</option>
+                    </select>
+                  </div>
+
+                  {/* Tìm kiếm */}
+                  <div style={{ height: "45px" }} className="search-wrapper">
+                    <input
+                      type="text"
+                      placeholder="Tìm kiếm theo tên..."
+                      value={searchName}
+                      onChange={handleSearchChange}
+                    />
+                  </div>
                 </div>
+
+                {/* Hiển thị sản phẩm */}
                 <div className="row mb-5">
                   {products?.content?.map((product) => (
                     <div key={product.p_id} className="col-sm-6 col-lg-4 mb-4">
@@ -206,16 +318,18 @@ const Shop = () => {
                             {product.material || "Chất Liệu Sản Phẩm"}
                           </p>
                           <p className="text-primary font-weight-bold">
-                            $ {product.price || "Không có giá"}
+                            {formatCurrency(product.price || "Không có giá")}{" "}
+                            VND
                           </p>
                         </div>
                       </div>
                     </div>
                   ))}
                 </div>
+
+                {/* Phân trang */}
                 <div className="row">
                   <div className="col-md-12 text-center">
-                    {/* Phân trang */}
                     {totalPages > 0 && (
                       <div className="pagination">
                         <button onClick={prevPage} disabled={currentPage === 0}>
@@ -235,10 +349,10 @@ const Shop = () => {
                   </div>
                 </div>
               </div>
-              <div className="col-md-3 order-1 mb-5 mb-md-0"></div>
             </div>
           </div>
         </div>
+
         <footer className="site-footer border-top">
           <div className="container">
             <div className="row">

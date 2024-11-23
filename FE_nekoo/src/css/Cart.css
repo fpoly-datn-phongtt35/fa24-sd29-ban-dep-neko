@@ -1,119 +1,237 @@
-.cart-page {
-  font-family: Arial, sans-serif;
-  background-color: #f8f9fa;
-  padding: 20px;
-}
-
-/* .site-navbar {
-  background-color: #343a40;
-  color: white;
-  padding: 10px 0;
-}
-
-.site-logo a {
-  color: white;
-  font-size: 1.5em;
-  text-decoration: none;
-} */
-
 .cart-content {
-  margin-top: 30px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .cart-content h2 {
-  font-size: 2em;
-  font-weight: bold;
-  color: #333;
   text-align: center;
+  font-size: 24px;
+  font-weight: bold;
   margin-bottom: 20px;
 }
 
 .cart-items {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 20px;
-  justify-content: center;
 }
 
 .cart-item {
-  background-color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  padding: 15px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  width: 300px;
-  padding: 15px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  position: relative;
 }
 
-.cart-item-image {
-  width: 100%;
-  height: 200px;
+.cart-item img {
+  width: 160px; /* Adjust image size */
+  height: 120px;
   object-fit: cover;
   border-radius: 8px;
+  margin-right: 20px;
 }
 
 .cart-item-info {
-  margin-top: 10px;
-  text-align: center;
+  display: flex;
+  flex-direction: column; /* Stack name, price, quantity vertically */
+  gap: 10px;
+  margin-right: auto; /* Push info to the left */
 }
 
 .cart-item-info h3 {
-  font-size: 1.2em;
+  font-size: 18px;
   font-weight: bold;
-  color: #333;
+  margin: 0;
 }
 
 .cart-item-info p {
-  color: #777;
-  font-size: 1em;
+  font-size: 16px;
+  color: #555;
+  margin: 0;
 }
 
+.cart-item-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center; /* Center buttons vertically */
+  align-items: flex-end;
+}
+
+.voucher-btn,
 .remove-btn {
-  background-color: #ff4d4d;
-  color: white;
-  border: none;
-  padding: 8px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1em;
-  margin-top: 10px;
-  transition: background-color 0.3s;
-}
-
-.remove-btn:hover {
-  background-color: #e60000;
-}
-
-.cart-summary {
-  margin-top: 30px;
-  text-align: center;
-}
-
-.cart-summary p {
-  font-size: 1.2em;
-  font-weight: bold;
-  color: #333;
-}
-
-.checkout-btn {
   background-color: #007bff;
   color: white;
   border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
+  padding: 8px 16px;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 1.1em;
-  transition: background-color 0.3s;
+  font-size: 14px;
 }
 
-.checkout-btn:hover {
+.voucher-btn:hover,
+.remove-btn:hover {
   background-color: #0056b3;
 }
 
-.site-footer {
+.cart-summary {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cart-summary p {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.select-transport-btn,
+.checkout-btn {
+  background-color: #28a745;
   color: white;
-  padding: 15px 0;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+.select-transport-btn:hover,
+.checkout-btn:hover {
+  background-color: #218838;
+}
+
+p {
+  font-size: 16px;
+  color: #999;
+}
+
+.quantity-container {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.quantity-container label {
+  margin-right: 10px;
+}
+
+.quantity-input {
+  width: 100px;
+  padding: 5px;
   text-align: center;
-  margin-top: 30px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.quantity-input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+
+.modal {
+  display: flex !important; /* Bắt buộc modal hiển thị */
+}
+
+/* Modal container */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3); /* Mờ nền nhẹ */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal content */
+.modal-content {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  width: 300px; /* Kích thước nhỏ gọn */
+  max-width: 90%; /* Đảm bảo không vượt quá chiều rộng màn hình */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  text-align: left;
+}
+
+/* Tiêu đề modal */
+.modal-content h2 {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* Danh sách các phương thức vận chuyển */
+.modal-content ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap; /* Cho phép các mục chuyển sang dòng mới khi cần */
+  gap: 10px; /* Khoảng cách giữa các mục */
+  justify-content: space-between;
+}
+
+/* Các mục trong danh sách */
+.modal-content ul li {
+  width: 48%; /* Mỗi mục chiếm nửa chiều rộng */
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* Các nút chọn phương thức vận chuyển */
+.modal-content button {
+  padding: 8px 12px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  width: 100%;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+}
+
+.modal-content button:hover {
+  background-color: #0056b3;
+}
+
+/* Nút đóng modal */
+.close-btn {
+  padding: 8px 12px;
+  background-color: #ccc;
+  color: #333;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  width: 100%;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.close-btn:hover {
+  background-color: #999;
 }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { FaUser } from "react-icons/fa";
 import { HiShoppingCart } from "react-icons/hi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../../css/shop/fontStyle.css";
 import "../../css/bootstrap/bootstrap.min.css";
 import "../../css/bootstrap/magnific-popup.css";
@@ -14,11 +14,13 @@ import { fetchOneCustomer } from "../../services/customerService";
 import UpdateCustomerModal from "./UpdateCustomerModal";
 import { ToastContainer, toast } from "react-toastify"; // Import Toastify
 import "react-toastify/dist/ReactToastify.css"; // Import CSS Toastify
+import "../../css/ManageCustomer.css";
 
 const ManageCustomer = () => {
   const [customer, setCustomer] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const token = localStorage.getItem("token");
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (token) {
@@ -39,6 +41,11 @@ const ManageCustomer = () => {
       setCustomer(data); // Cập nhật lại thông tin khách hàng
       toast.success("Cập nhật thông tin khách hàng thành công!"); // Hiển thị toast thông báo thành công
     });
+  };
+  const handleLogout = () => {
+    // Xóa token khỏi localStorage và điều hướng đến trang đăng nhập
+    localStorage.clear();
+    navigate("/login"); // Thay đổi đường dẫn đến trang đăng nhập
   };
 
   return (
@@ -62,19 +69,22 @@ const ManageCustomer = () => {
                   <div className="site-top-icons">
                     <ul>
                       <li>
-                        <Link to={"/manageCustomer"}>
+                        <Link to={"/customer"}>
                           <FaUser />
                         </Link>
                       </li>
                       <li>
-                        <Link to={"/manageCart"} className="site-cart">
+                        <Link to={"/cart"} className="site-cart">
                           <HiShoppingCart />
-                          <span className="count">2</span>
                         </Link>
                       </li>
                       <li>
                         {token ? (
-                          <Link to={"/login"} className="site-cart">
+                          <Link
+                            to={"/login"}
+                            className="site-cart"
+                            onClick={handleLogout}
+                          >
                             <span>Đăng xuất</span>
                           </Link>
                         ) : (
@@ -89,35 +99,57 @@ const ManageCustomer = () => {
               </div>
             </div>
           </div>
+          <nav
+            className="site-navigation text-right text-md-center"
+            role="navigation"
+          >
+            <div className="container">
+              <ul className="site-menu js-clone-nav d-none d-md-block">
+                <li>
+                  <Link to="/shop">CỬA HÀNG</Link>
+                </li>
+                <li>
+                  <Link to="/cart">GIỎ HÀNG</Link>
+                </li>
+                <li>
+                  <Link to="/order">Đơn hàng</Link>
+                </li>
+              </ul>
+            </div>
+          </nav>
         </header>
-        <div className="container mt-4">
+        <div className="container mt-4" style={{ zIndex: 9999 }}>
           <h2 className="text-center">Thông tin khách hàng</h2>
           {customer ? (
             <div className="row customer-info">
               {/* Left Column */}
               <div className="col-md-6">
                 <div className="mb-3 row">
-                  <label className="col-sm-4 col-form-label">Họ và tên:</label>
+                  <label className="col-sm-4 col-form-label text-center">
+                    Họ và tên:
+                  </label>
                   <div className="col-sm-8">
-                    <output className="form-control-plaintext">
+                    <output className="form-control-plaintext text-center">
                       {customer.name}
                     </output>
                   </div>
                 </div>
                 <div className="mb-3 row">
-                  <label className="col-sm-4 col-form-label">Ngày sinh:</label>
+                  <label className="col-sm-4 col-form-label text-center">
+                    Ngày sinh:
+                  </label>
                   <div className="col-sm-8">
-                    <output className="form-control-plaintext">
+                    <output className="form-control-plaintext text-center">
                       {new Date(customer.dateOfBirth).toLocaleDateString()}
                     </output>
                   </div>
                 </div>
                 <div className="mb-3 row">
-                  <label className="col-sm-4 col-form-label">
+                  <label className="col-sm-4 col-form-label text-center">
                     Số điện thoại:
                   </label>
                   <div className="col-sm-8">
-                    <output className="form-control-plaintext">
+                    <output className="form-control-plaintext text-center">
                       {customer.phone}
                     </output>
                   </div>
@@ -127,25 +159,31 @@ const ManageCustomer = () => {
               {/* Right Column */}
               <div className="col-md-6">
                 <div className="mb-3 row">
-                  <label className="col-sm-4 col-form-label">CCCD:</label>
+                  <label className="col-sm-4 col-form-label text-center">
+                    CCCD:
+                  </label>
                   <div className="col-sm-8">
-                    <output className="form-control-plaintext">
+                    <output className="form-control-plaintext text-center">
                       {customer.cccd}
                     </output>
                   </div>
                 </div>
                 <div className="mb-3 row">
-                  <label className="col-sm-4 col-form-label">Địa chỉ:</label>
+                  <label className="col-sm-4 col-form-label text-center">
+                    Địa chỉ:
+                  </label>
                   <div className="col-sm-8">
-                    <output className="form-control-plaintext">
+                    <output className="form-control-plaintext text-center">
                       {customer.address}
                     </output>
                   </div>
                 </div>
                 <div className="mb-3 row">
-                  <label className="col-sm-4 col-form-label">Giới tính:</label>
+                  <label className="col-sm-4 col-form-label text-center">
+                    Giới tính:
+                  </label>
                   <div className="col-sm-8">
-                    <output className="form-control-plaintext">
+                    <output className="form-control-plaintext text-center">
                       {customer.gender ? "Nam" : "Nữ"}
                     </output>
                   </div>
@@ -160,11 +198,15 @@ const ManageCustomer = () => {
                   Cập nhật thông tin
                 </button>
                 {isModalOpen && (
-                  <UpdateCustomerModal
-                    customer={customer}
-                    onClose={handleCloseModal}
-                    onUpdate={handleUpdate} // Gọi lại hàm handleUpdate sau khi cập nhật
-                  />
+                  <div className="modal-overlay">
+                    <div className="modal-content">
+                      <UpdateCustomerModal
+                        customer={customer}
+                        onClose={handleCloseModal}
+                        onUpdate={handleUpdate}
+                      />
+                    </div>
+                  </div>
                 )}
               </div>
             </div>

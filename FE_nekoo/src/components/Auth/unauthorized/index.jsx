@@ -17,7 +17,7 @@ const NotFoundPage = () => {
         navigate("/manageCustomer");
         break;
       case "CUSTOMER":
-        navigate("/home");
+        navigate("/shop");
         break;
       default:
         alert("Bạn không có quyền truy cập vào trang này!");
