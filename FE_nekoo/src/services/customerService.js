@@ -18,6 +18,7 @@ export const fetchOneCustomer = async (id, token) => {
     },
   });
   return response.data.values.userDetail;
+  
 };
 
 export const updateCustomer = async (id, customer) => {

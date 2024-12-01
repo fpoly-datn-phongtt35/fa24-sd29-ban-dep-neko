@@ -56,10 +56,6 @@ const ManageVoucher = () => {
 
   const handleAddVoucher = async () => {
     if (newVoucherDiscount) {
-      if (newVoucherDiscount <= 0) {
-        toast.error("Giá tiền giảm phải lớn hơn 0 !!!");
-        return;
-      }
       try {
         await addVoucher({ discount: newVoucherDiscount, status: 1 });
         toast.success("Thêm mới mã giảm giá thành công!");
@@ -70,7 +66,7 @@ const ManageVoucher = () => {
         toast.error("Thêm mới mã thất bại!");
       }
     } else {
-      toast.error("Vui lòng nhập số tiền hợp lệ.");
+      toast.warning("Vui lòng nhập số tiền hợp lệ.");
     }
   };
 
@@ -83,10 +79,6 @@ const ManageVoucher = () => {
 
   const handleUpdateVoucher = async () => {
     if (selectedVoucher && newDiscount) {
-      if (newDiscount <= 0) {
-        toast.error("Giá tiền giảm phải lớn hơn 0 !!!");
-        return;
-      }
       try {
         await updateVoucher(selectedVoucher.v_id, parseFloat(newDiscount));
         toast.success("Cập nhật mã giảm giá thành công!");
@@ -97,7 +89,7 @@ const ManageVoucher = () => {
         toast.error("Cập nhật mã giảm giá thất bại!");
       }
     } else {
-      toast.error("Vui lòng nhập số tiền hợp lệ.");
+      toast.warning("Vui lòng nhập số tiền hợp lệ.");
     }
   };
 
@@ -252,7 +244,7 @@ const ManageVoucher = () => {
 
             {/* Add Voucher Modal */}
             <Modal show={showAddForm} onHide={() => setShowAddForm(false)}>
-              <Modal.Header>
+              <Modal.Header closeButton>
                 <Modal.Title>Thêm mã giảm giá</Modal.Title>
               </Modal.Header>
               <Modal.Body>
@@ -276,7 +268,7 @@ const ManageVoucher = () => {
               show={showUpdateForm}
               onHide={() => setShowUpdateForm(false)}
             >
-              <Modal.Header>
+              <Modal.Header closeButton>
                 <Modal.Title>Cập nhật mã giảm giá</Modal.Title>
               </Modal.Header>
               <Modal.Body>

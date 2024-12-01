@@ -20,7 +20,6 @@ const Cart = () => {
   const [showVouchersModal, setShowVouchersModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [proID, setProID] = useState("");
-  const [phoneError, setPhoneError] = useState("");
   const [showTransportModal, setShowTransportModal] = useState(false);
   const token = localStorage.getItem("token");
   const [selectedVoucherID, setSelectedVoucherId] = useState({
@@ -90,30 +89,27 @@ const Cart = () => {
 
   const applyVoucherToProduct = (id) => {
     let voucher = vouchers.find((item) => item.v_id == id);
-    for (let i of cart) {
-      if (i.productPrice < voucher.discount) {
-        toast.warning("Mã giảm giá vượt quá giá sản phẩm!");
-        return;
-      }
-    }
 
     if (id != "") {
+      // Duyệt qua các voucherProducts
       for (let item of voucher.voucherProducts) {
+        // Kiểm tra xem sản phẩm có trùng với sản phẩm được chọn không
         if (item.productId === proID) {
-          if (item.productPrice > voucher.discount) {
-            toast.warning("Voucher vượt quá số tiền sản phẩm");
-            return;
-          }
+          // Kiểm tra xem số lượng voucher có lớn hơn 0 không
           if (item.quantity === 0) {
             toast.warning("Hết mã giảm giá, không thể áp dụng!");
-            return;
+            // setShowVouchersModal(false);
+            return; // Dừng hoàn toàn hàm nếu hết voucher
           }
-          break;
+          // Nếu voucher còn, có thể tiếp tục xử lý ở đây
+          // Thực hiện các hành động khác nếu cần
+          break; // Thoát vòng lặp nếu tìm thấy voucher phù hợp
         }
       }
       voucher["productId"] = proID;
     }
     setSelectedVoucherId({ ...selectedVoucherID, v_id: id });
+    // Nếu voucher có sẵn và còn số lượng, tiếp tục thực hiện các bước dưới đây
 
     if (selectedProduct) {
       const updatedCart = cart.map((item) =>
@@ -144,9 +140,10 @@ const Cart = () => {
   };
 
   const handleQuantityChange = (quantity, value) => {
+    // Cho phép người dùng nhập tự do mà không kiểm tra ngay lập tức
     const updatedCart = cart.map((item) => {
       if (item.productDetailId === value.productDetailId) {
-        return { ...item, quantity: quantity };
+        return { ...item, quantity: quantity }; // Tạm thời lưu giá trị người dùng đang nhập
       }
       return item;
     });
@@ -452,7 +449,7 @@ const Cart = () => {
       </main>
 
       {showVouchersModal && (
-        <div className="modal" style={{ zIndex: 9999 }}>
+        <div className="modal">
           <div className="modal-content">
             <h2>Chọn mã giảm giá</h2>
             <select
@@ -488,34 +485,17 @@ const Cart = () => {
       )}
 
       {showTransportModal && (
-        <div className="modal" style={{ zIndex: 9999 }}>
+        <div className="modal">
           <div className="modal-content" style={{ maxWidth: "30%" }}>
             <h2>Nhập thông tin người nhận</h2>
             <label style={{ marginTop: "5%" }}>Số điện thoại người nhận</label>
             <input
-              style={{
-                border: "2px solid gray",
-                borderRadius: "5px",
-                borderColor: phoneError ? "red" : "gray",
-              }}
+              style={{ border: "2px solid gray", borderRadius: "5px" }}
               required
               type="text"
               value={info.phone}
-              onChange={(e) => {
-                const phoneValue = e.target.value;
-                setInfo({ ...info, phone: phoneValue });
-
-                // Validate số điện thoại (10 chữ số, bắt đầu bằng số 0)
-                const phoneRegex = /^0\d{9}$/;
-                setPhoneError(!phoneRegex.test(phoneValue));
-              }}
+              onChange={(e) => setInfo({ ...info, phone: e.target.value })}
             />
-            {phoneError && (
-              <p style={{ color: "red", fontSize: "12px", marginTop: "5px" }}>
-                Số điện thoại không hợp lệ! Vui lòng nhập số có 10 chữ số bắt
-                đầu bằng 0.
-              </p>
-            )}
             <br />
             <label>Địa chỉ người nhận</label>
             <input
@@ -525,15 +505,10 @@ const Cart = () => {
               value={info.address}
               onChange={(e) => setInfo({ ...info, address: e.target.value })}
             />
+
             <button
               style={{ marginTop: "7%" }}
-              onClick={() => {
-                if (phoneError || !info.phone || !info.address) {
-                  alert("Vui lòng kiểm tra thông tin nhập!");
-                  return;
-                }
-                handleCheckout();
-              }}
+              onClick={() => handleCheckout()}
               className="close-btn"
             >
               Xác nhận

@@ -117,15 +117,6 @@ const ManagerOrder = () => {
     loadData(code, status, currentPage);
   };
 
-  function formatDateWithoutTimezone(dateString) {
-    // Tách phần ngày và giờ từ chuỗi thời gian
-    const datePart = dateString.split("T")[0]; // "2024-11-30"
-    const timePart = dateString.split("T")[1];
-    const time = timePart.split(".")[0]; // "00:00:00"
-
-    return `${datePart} ${time}`; // Kết hợp ngày và giờ
-  }
-
   return (
     <>
       {part == "order" && (
@@ -161,7 +152,11 @@ const ManagerOrder = () => {
           ) : (
             <>
               {/* Hiển thị danh sách đơn hàng */}
-              <div className={`order-list ${orders?.content?.length === 1 ? "single-order" : ""}`}>
+              <div
+                className={`order-list ${
+                  orders?.content?.length === 1 ? "single-order" : ""
+                }`}
+              >
                 {orders?.content?.map((order) => {
                   let status;
                   if (order.status == "pending") {
@@ -182,12 +177,18 @@ const ManagerOrder = () => {
                       <p>Khách hàng: {order.customerName}</p>
                       <p>Số điện thoại: {order.phone}</p>
                       <p>Địa chỉ: {order.address}</p>
-                      <p>Ngày đặt {formatDateWithoutTimezone(order.createAt)}</p>
                       <label>
                         Trạng thái:{" "}
-                        <span style={status == "Đơn đã huỷ" ? { color: "red" } : {}}>{status}</span>
+                        <span
+                          style={status == "Đơn đã huỷ" ? { color: "red" } : {}}
+                        >
+                          {status}
+                        </span>
                       </label>
-                      <button className="detail-button" onClick={() => handleDetail(order.code)}>
+                      <button
+                        className="detail-button"
+                        onClick={() => handleDetail(order.code)}
+                      >
                         Chi tiết
                       </button>
                     </div>
@@ -206,7 +207,10 @@ const ManagerOrder = () => {
                       <span>
                         Trang {currentPage + 1} / {totalPages}
                       </span>
-                      <button onClick={nextPage} disabled={currentPage === totalPages - 1}>
+                      <button
+                        onClick={nextPage}
+                        disabled={currentPage === totalPages - 1}
+                      >
                         Sau
                       </button>
                     </div>
@@ -259,7 +263,9 @@ const ManagerOrder = () => {
                 <>
                   {/* Hiển thị danh sách đơn hàng */}
                   <div
-                    className={`order-list ${orders?.content?.length === 1 ? "single-order" : ""}`}
+                    className={`order-list ${
+                      orders?.content?.length === 1 ? "single-order" : ""
+                    }`}
                   >
                     {orders?.content?.map((order) => (
                       <div key={order.code} className="order-card">
@@ -267,10 +273,10 @@ const ManagerOrder = () => {
                         <p>Khách hàng: {order.customerName}</p>
                         <p>Số điện thoại: {order.phone}</p>
                         <p>Địa chỉ: {order.address}</p>
-                        <p>Ngày đặt {formatDateWithoutTimezone(order.createAt)}</p>
                         {order.status == "cancelled" && (
                           <label>
-                            Trạng thái: <span style={{ color: "red" }}>Đơn đã huỷ</span>
+                            Trạng thái:{" "}
+                            <span style={{ color: "red" }}>Đơn đã huỷ</span>
                           </label>
                         )}
                         {order.status != "cancelled" && (
@@ -287,7 +293,10 @@ const ManagerOrder = () => {
                             </select>
                           </label>
                         )}
-                        <button className="detail-button" onClick={() => handleDetail(order.code)}>
+                        <button
+                          className="detail-button"
+                          onClick={() => handleDetail(order.code)}
+                        >
                           Chi tiết
                         </button>
                       </div>
@@ -299,13 +308,19 @@ const ManagerOrder = () => {
                       {/* Phân trang */}
                       {totalPages > 0 && (
                         <div className="pagination">
-                          <button onClick={prevPage} disabled={currentPage === 0}>
+                          <button
+                            onClick={prevPage}
+                            disabled={currentPage === 0}
+                          >
                             Trước
                           </button>
                           <span>
                             Trang {currentPage + 1} / {totalPages}
                           </span>
-                          <button onClick={nextPage} disabled={currentPage === totalPages - 1}>
+                          <button
+                            onClick={nextPage}
+                            disabled={currentPage === totalPages - 1}
+                          >
                             Sau
                           </button>
                         </div>

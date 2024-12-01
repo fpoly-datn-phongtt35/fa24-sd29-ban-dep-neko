@@ -73,15 +73,13 @@ const ManageStaff = () => {
 
       const usernameRegex = /^[a-zA-Z0-9_]{3,}$/;
       if (!usernameRegex.test(newUsername)) {
-        toast.error(
-          "Tên đăng nhập ít nhất 3 kí tự, không chứa kí tự đặc biệt."
-        );
+        toast.error("Ít nhất 3 kí tự, không chứa kí tự đặc biệt.");
         return;
       }
 
       const nameAddressRegex = /^[a-zA-Z0-9\s.,!?()&'-]*$/;
       if (!nameAddressRegex.test(newName)) {
-        toast.error("Họ và tên không được chứa ký tự đặc biệt.");
+        toast.error("Tên không được chứa ký tự đặc biệt.");
         return;
       }
 
@@ -164,7 +162,7 @@ const ManageStaff = () => {
   // Hàm mở form cập nhật
   const handleEditClick = (member) => {
     console.log(member);
-
+    
     setEditStaff(member);
     setEditName(member.name || "");
     setEditPhone(member.phone || "");
@@ -188,36 +186,6 @@ const ManageStaff = () => {
   const handleUpdate = async () => {
     if (!editStaff) return;
     try {
-      const nameRegex = /^[a-zA-Z0-9\s.,!?()&'-]*$/;
-      if (!nameRegex.test(editName)) {
-        toast.error("Họ và tên không được chứa ký tự đặc biệt.");
-        return;
-      }
-
-      const nameAddressRegex = /^[a-zA-Z0-9\s.,!?()&'-]*$/;
-      if (!nameAddressRegex.test(newAddress)) {
-        toast.error("Địa chỉ không được chứa ký tự đặc biệt.");
-        return;
-      }
-
-      const phoneRegex = /^[0-9]{10}$/;
-      if (!phoneRegex.test(editPhone)) {
-        toast.error("Số điện thoại không hợp lệ (10 chữ số).");
-        return;
-      }
-
-      const cccdRegex = /^[0-9]{12}$/;
-      if (!cccdRegex.test(editCCCD)) {
-        toast.error("Số CCCD không hợp lệ (12 chữ số).");
-        return;
-      }
-
-      // const dateOfBirth = new Date(newDateOfBirth);
-      // if (isNaN(dateOfBirth.getTime())) {
-      //   toast.error("Ngày sinh không hợp lệ.");
-      //   return;
-      // }
-
       const updatedMember = {
         id: editStaff.id,
         name: editName,
@@ -330,6 +298,7 @@ const ManageStaff = () => {
                   <th>Ngày Sinh</th>
                   <th>Điện Thoại</th>
                   <th>CCCD</th>
+                  <th>Giới Tính</th>
                   <th>Trạng Thái</th>
                   <th>Thao Tác</th>
                 </tr>
@@ -355,6 +324,7 @@ const ManageStaff = () => {
                       </td>
                       <td>{member.phone || "N/A"}</td>
                       <td>{member.cccd || "N/A"}</td>
+                      <td>{member.gender ? "Nam" : "Nữ"}</td>
                       <td>
                         {member.status ? (
                           <span className="badge bg-success">
@@ -384,7 +354,7 @@ const ManageStaff = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="9">Không có nhân viên nào nào!</td>
+                    <td colSpan="8">Không có nhân viên nào nào!</td>
                   </tr>
                 )}
               </tbody>
@@ -485,9 +455,7 @@ const ManageStaff = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>
-                      CCCD<span style={{ color: "red" }}>*</span>
-                    </label>
+                    <label>CCCD</label>
                     <input
                       type="text"
                       className="form-control"
@@ -496,9 +464,7 @@ const ManageStaff = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>
-                      Địa chỉ<span style={{ color: "red" }}>*</span>
-                    </label>
+                    <label>Địa chỉ</label>
                     <input
                       type="text"
                       className="form-control"

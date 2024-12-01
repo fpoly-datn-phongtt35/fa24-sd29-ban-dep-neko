@@ -146,26 +146,3 @@ h2 {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 1100; /* Giá trị cao hơn lớp phủ */
 }
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5); /* Hiệu ứng mờ */
-  z-index: 9999; /* Đảm bảo cao hơn mọi thành phần khác */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-content {
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  max-width: 500px;
-  width: 90%;
-  z-index: 1060; /* Đảm bảo modal nội dung cao hơn overlay */
-}

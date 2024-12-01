@@ -14,7 +14,6 @@ import { fetchOneCustomer } from "../../services/customerService";
 import UpdateCustomerModal from "./UpdateCustomerModal";
 import { ToastContainer, toast } from "react-toastify"; // Import Toastify
 import "react-toastify/dist/ReactToastify.css"; // Import CSS Toastify
-import "../../css/ManageCustomer.css";
 
 const ManageCustomer = () => {
   const [customer, setCustomer] = useState(null);
@@ -99,26 +98,8 @@ const ManageCustomer = () => {
               </div>
             </div>
           </div>
-          <nav
-            className="site-navigation text-right text-md-center"
-            role="navigation"
-          >
-            <div className="container">
-              <ul className="site-menu js-clone-nav d-none d-md-block">
-                <li>
-                  <Link to="/shop">CỬA HÀNG</Link>
-                </li>
-                <li>
-                  <Link to="/cart">GIỎ HÀNG</Link>
-                </li>
-                <li>
-                  <Link to="/order">Đơn hàng</Link>
-                </li>
-              </ul>
-            </div>
-          </nav>
         </header>
-        <div className="container mt-4" style={{ zIndex: 9999 }}>
+        <div className="container mt-4">
           <h2 className="text-center">Thông tin khách hàng</h2>
           {customer ? (
             <div className="row customer-info">

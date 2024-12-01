@@ -3,7 +3,7 @@ import axios from "axios";
 const API_BASE_URL = "http://localhost:8080/api/category";
 
 export const loadCategories = async (token) => {
-  const response = await axios.get(`${API_BASE_URL}/getAll`, {
+  const response = await axios.get(`${API_BASE_URL}/getAlll`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -12,7 +12,7 @@ export const loadCategories = async (token) => {
 };
 
 export const loadCategoriesAvailable = async (token) => {
-  const response = await axios.get(`${API_BASE_URL}/getAlll`, {
+  const response = await axios.get(`${API_BASE_URL}/getAll`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

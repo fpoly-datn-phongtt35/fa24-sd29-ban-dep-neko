@@ -65,17 +65,6 @@ const ManageProductDetail = () => {
   // Handle form submit (for add/update)
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (newDetail.size <= 0) {
-      toast.error("Kích cỡ không được nhỏ hơn hoặc bằng 0");
-      return;
-    }
-
-    if (newDetail.quantity <= 0) {
-      toast.error("Số lượng không được nhỏ hơn hoặc bằng 0");
-      return;
-    }
-
     if (
       !newDetail.size ||
       !newDetail.color ||
@@ -102,7 +91,7 @@ const ManageProductDetail = () => {
       formDataUpdate.append("color", newDetail.color);
       formDataUpdate.append("quantity", newDetail.quantity);
       formDataUpdate.append("image", newDetail.image);
-      formDataUpdate.append("status", selectedDetail.status);
+      formDataUpdate.append("status", selectedDetail.status)
       // Update existing product detail
       const updated = await updateProductDetail(formDataUpdate, token);
       if (updated) {
@@ -256,7 +245,7 @@ const ManageProductDetail = () => {
       </div>
 
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
-        <Modal.Header>
+        <Modal.Header closeButton>
           <Modal.Title>
             {isUpdate ? "Cập nhật chi tiết sản phẩm" : "Thêm chi tiết sản phẩm"}
           </Modal.Title>
